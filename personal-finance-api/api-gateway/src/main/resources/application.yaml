@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+zuul:
+  routes:
+    finance-service:
+      path: /api/finance/**
+      serviceId: finance-service
+    community-service:
+      path: /api/community/**
+      serviceId: community-service
