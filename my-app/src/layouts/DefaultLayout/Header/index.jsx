@@ -23,6 +23,7 @@ const Header = () => {
       </div>
       <nav className="flex items-center gap-8">
         <Link to="/transaction">Transaction</Link>
+        <Link to="/community">Blog</Link>
         <Link>About</Link>
         {isAuthenticated() ? (
           <div>

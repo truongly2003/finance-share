@@ -1,8 +1,10 @@
 package com.example.user_service.controller;
 
 import com.example.user_service.dto.request.AuthCallbackRequest;
+import com.example.user_service.dto.request.AuthenticateRequest;
 import com.example.user_service.dto.request.LoginRequest;
 import com.example.user_service.dto.request.RefreshTokenRequest;
+import com.example.user_service.dto.response.ApiResponse;
 import com.example.user_service.dto.response.UserResponse;
 import com.example.user_service.service.IAuthService;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +42,11 @@ public class AuthController {
     @PostMapping("/callback/facebook")
     public ResponseEntity<?> callbackFacebook(@RequestBody AuthCallbackRequest request) {
         return ResponseEntity.ok(authService.handleFacebookCallback(request.getCode()));
+    }
+
+    // check token
+    @PostMapping("/authenticate")
+    public ApiResponse<Boolean> authenticate(@RequestBody AuthenticateRequest request){
+        return ApiResponse.<Boolean>builder().data(authService.authenticate(request.getToken())).build();
     }
 }

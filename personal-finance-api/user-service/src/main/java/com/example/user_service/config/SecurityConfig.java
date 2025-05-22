@@ -25,7 +25,8 @@ public class SecurityConfig  {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
 //                                "/api/auth/callback/google", "/oauth2/**",
-                                "/api/auth/login","/api/user/register"
+                                "/api/auth/login","/api/user/register",
+                                "api/auth/authenticate"
 //                                "/api/auth/refresh","/api/email/verify-email"
 //                                "/api/user/forgot-password","/api/user/reset-password"
 //                                "/api/oauth/google","/api/oauth/facebook","/api/auth/callback/facebook"

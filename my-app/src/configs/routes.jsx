@@ -29,6 +29,9 @@ const routes={
 
     ForgetPassword:'/forgot-password',
     ResetPassword:'/reset-password',
+
+    // community
+    HomeCommunity:'/community'
 }
 export default routes
 

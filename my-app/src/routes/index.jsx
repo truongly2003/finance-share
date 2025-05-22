@@ -25,6 +25,8 @@ import Groups from "@/pages/client/Groups";
 import GroupDetail from "@/pages/client/GroupDetail";
 import Setting from "@/pages/client/Setting";
 import { GroupProvider } from "@/context/GroupContext";
+import CommunityLayout from "@/layouts/CommunityLayout";
+import HomeCommunity from "@/pages/community/Home";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
   {
@@ -50,6 +52,8 @@ export const publicRoutes = [
     component: () => <AuthCallback provider="facebook" />,
     layout: null,
   },
+    // community
+  { path: routes.HomeCommunity, component: HomeCommunity, layout: CommunityLayout },
 ];
 
 export const privateRoutes = [
@@ -57,11 +61,15 @@ export const privateRoutes = [
   { path: routes.Overview, component: Overview, layout: TransactionLayout },
   { path: routes.Setting, component: Setting, layout: TransactionLayout },
 
-  { path: routes.GroupDetail, component: ()=>(
-    <GroupProvider>
-      <GroupDetail/>
-    </GroupProvider>
-  ), layout: TransactionLayout },
+  {
+    path: routes.GroupDetail,
+    component: () => (
+      <GroupProvider>
+        <GroupDetail />
+      </GroupProvider>
+    ),
+    layout: TransactionLayout,
+  },
 
   { path: routes.Budget, component: Budget, layout: TransactionLayout },
   { path: routes.Groups, component: Groups, layout: TransactionLayout },
@@ -73,6 +81,7 @@ export const privateRoutes = [
   },
   { path: routes.Goal, component: Goal, layout: TransactionLayout },
   { path: routes.GoalDetail, component: GoalDetail, layout: TransactionLayout },
-  
+
+
 
 ];

@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "finance-service")
 public interface WalletClient {
-    @PostMapping("api/wallet/create-wallet-default")
+    @PostMapping("finance-service/api/wallet/create-wallet-default")
     void createWallet(@RequestParam String userId);
 }

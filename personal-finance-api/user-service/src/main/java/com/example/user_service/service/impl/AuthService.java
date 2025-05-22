@@ -60,24 +60,17 @@ public class AuthService implements IAuthService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserResponse processOAuth2User(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
-        String id = oAuth2User.getAttribute("sub");
-        return UserResponse.builder()
-                .id(id)
-                .userName(name)
-                .email(email)
-                .accountType("GOOGLE")
-                .build();
-    }
-
-    @Override
     public User addUser(UserRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setLoginType("google");
         return userRepository.save(user);
+    }
+
+    // check token
+    @Override
+    public boolean authenticate(String token) {
+        return jwtUtil.validateToken(token);
     }
 
     @Override
@@ -233,6 +226,7 @@ public class AuthService implements IAuthService {
         }
 
     }
+
 
     private String getAccessTokenFromFacebook(String code) {
         String tokenUrl = "https://graph.facebook.com/v18.0/oauth/access_token";
