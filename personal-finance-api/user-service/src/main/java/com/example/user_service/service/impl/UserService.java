@@ -23,6 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -128,16 +130,16 @@ public class UserService implements IUserService {
     // password
     @Override
     public boolean forgotPassword(ForgotPasswordRequest request) {
-        Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
-        if(userOptional.isEmpty()){
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if (userOptional.isEmpty()) {
             return false;
         }
         String token = UUID.randomUUID().toString();
-        User user= userOptional.get();
+        User user = userOptional.get();
         user.setResetPasswordToken(token);
         userRepository.save(user);
         emailService.sendPasswordResetEmail(user, token);
-      return true;
+        return true;
     }
 
     @Override
@@ -152,6 +154,25 @@ public class UserService implements IUserService {
         user.setResetPasswordToken(null);
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public String getUserName(String userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        assert user != null;
+        return user.getUserName();
+    }
+
+    @Override
+    public List<String> getListUserName() {
+        List<User> user = userRepository.findAll();
+        if(user==null){
+            log.info("xin chao");
+            return null;
+        }
+        List<String> userNames = new ArrayList<>();
+        user.forEach(user1 -> userNames.add(user1.getUserName()));
+        return userNames;
     }
 
 }

@@ -17,4 +17,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     // lấy danh sách user
     @Query("SELECT DISTINCT t.userId FROM User t")
     List<String> findDistinctUserIds();
+
+//    Optional<User> findBy(String userId);
+
+    List<User> findAll();
 }

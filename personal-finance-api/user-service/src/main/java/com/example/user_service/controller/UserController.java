@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -34,6 +36,7 @@ public class UserController {
         ApiResponse<UserRegisterResponse> response = new ApiResponse<>(200, "Đăng ký thành công", null);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     @PutMapping
     ResponseEntity<ApiResponse<Boolean>> updateUser(@RequestParam String userId, @RequestBody UserRequest request) {
         try {
@@ -114,5 +117,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(500, e.getMessage(), false));
         }
+    }
+    //    get username
+    @GetMapping("/get-username")
+    public ResponseEntity<String> getUsername(@RequestParam String userId) {
+        String username = userService.getUserName(userId);
+        return ResponseEntity.ok(username);
+    }
+    @GetMapping("/get-list-username")
+    public ResponseEntity<List<String>> getListUsername() {
+        List<String> listUsername = userService.getListUserName();
+        return ResponseEntity.ok(listUsername);
     }
 }

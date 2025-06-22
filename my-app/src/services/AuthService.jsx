@@ -2,7 +2,7 @@ import httpRequest from "@/utils/httpRequest";
 import axios from "axios";
 export const loginWithOAuth = async (provider, token) => {
   try {
-    const response = await axios.get(`/auth/${provider}`, {
+    const response = await axios.get(`/user-service/auth/${provider}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -25,7 +25,7 @@ export const loginWithOAuth = async (provider, token) => {
 };
 export const loginWithEmail = async (data) => {
   try {
-    const response = await httpRequest.post(`/auth/login`, data);
+    const response = await httpRequest.post(`/user-service/api/auth/login`, data);
     return response.data;
   } catch (error) {
     console.error(error);

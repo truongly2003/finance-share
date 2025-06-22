@@ -1,6 +1,9 @@
 import axios from "axios";
 const httpRequest = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "http://localhost:8082/",
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 let isRefreshing = false;

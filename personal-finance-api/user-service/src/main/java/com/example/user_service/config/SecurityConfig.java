@@ -26,7 +26,10 @@ public class SecurityConfig  {
                         .requestMatchers(
 //                                "/api/auth/callback/google", "/oauth2/**",
                                 "/api/auth/login","/api/user/register",
-                                "api/auth/authenticate"
+                                "api/auth/authenticate",
+                                "api/user/get-username",
+                                "api/user/get-list-username"
+
 //                                "/api/auth/refresh","/api/email/verify-email"
 //                                "/api/user/forgot-password","/api/user/reset-password"
 //                                "/api/oauth/google","/api/oauth/facebook","/api/auth/callback/facebook"

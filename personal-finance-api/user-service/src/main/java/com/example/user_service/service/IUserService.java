@@ -4,6 +4,8 @@ import com.example.user_service.dto.request.*;
 import com.example.user_service.dto.response.UserRegisterResponse;
 import com.example.user_service.dto.response.UserResponse;
 
+import java.util.List;
+
 public interface IUserService {
     UserResponse getUserById(String id);
     UserRegisterResponse addUser(UserRegisterRequest request);
@@ -12,4 +14,6 @@ public interface IUserService {
     boolean changePassword(String userId, UpdatePasswordRequest request);
     boolean forgotPassword(ForgotPasswordRequest request);
     boolean resetPassword(ResetPasswordRequest request);
+    String getUserName(String userId);
+    List<String> getListUserName();
 }

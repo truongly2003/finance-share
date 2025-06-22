@@ -8,7 +8,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { WalletProvider } from "./context/WalletContext ";
 import { BalanceProvider } from "./context/BalanceContext";
-import { GroupProvider } from "./context/GroupContext";
+// import { GroupProvider } from "./context/GroupContext";
 function App() {
   return (
     <Router>
@@ -16,44 +16,42 @@ function App() {
         <NotificationProvider>
           <BalanceProvider>
             <WalletProvider>
-              <GroupProvider>
-                <div className="App bg-[#f9e4d4] font-sans">
-                  <Routes>
-                    {publicRoutes.map((route, index) => {
-                      const Page = route.component;
-                      let Layout = DefaultLayout;
-                      if (route.layout) {
-                        Layout = route.layout;
-                      } else if (route.layout === null) {
-                        Layout = Fragment;
-                      }
-                      return (
-                        <Route
-                          key={index}
-                          path={route.path}
-                          element={
-                            <Layout>
-                              <Page />
-                            </Layout>
-                          }
-                        />
-                      );
-                    })}
-                    {privateRoutes.map((route, index) => (
+              <div className="App bg-[#f9e4d4] font-sans">
+                <Routes>
+                  {publicRoutes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+                    return (
                       <Route
                         key={index}
                         path={route.path}
                         element={
-                          <PrivateRoute
-                            component={route.component}
-                            layout={route.layout}
-                          />
+                          <Layout>
+                            <Page />
+                          </Layout>
                         }
                       />
-                    ))}
-                  </Routes>
-                </div>
-              </GroupProvider>
+                    );
+                  })}
+                  {privateRoutes.map((route, index) => (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <PrivateRoute
+                          component={route.component}
+                          layout={route.layout}
+                        />
+                      }
+                    />
+                  ))}
+                </Routes>
+              </div>
             </WalletProvider>
           </BalanceProvider>
         </NotificationProvider>

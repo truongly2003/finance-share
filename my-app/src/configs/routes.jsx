@@ -6,7 +6,7 @@ const routes={
     Budget: '/budget',
     BudgetDetail: '/budget/budget-detail/:id',
     Goal: '/goal',
-    Groups: '/groups',
+    Groups: '/groups-group',
     GoalDetail: '/goal/goal-detail/:id',
     Catalog: '/catalog',
     Report: '/report',
@@ -23,7 +23,7 @@ const routes={
     Setting:'/Setting',
     Profile:'/profile',
     Wallet:'/wallet',
-    GroupDetail: '/group-detail/:id',
+    GroupDetail: '/group-detail-group/:id',
     Checkemail:'/check-email',
     VerifyEmail:'/verify-email-token',
 
@@ -31,7 +31,8 @@ const routes={
     ResetPassword:'/reset-password',
 
     // community
-    HomeCommunity:'/community'
+    HomeCommunity:'/community',
+    test:'/test'
 }
 export default routes
 

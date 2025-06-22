@@ -26,7 +26,8 @@ import GroupDetail from "@/pages/client/GroupDetail";
 import Setting from "@/pages/client/Setting";
 import { GroupProvider } from "@/context/GroupContext";
 import CommunityLayout from "@/layouts/CommunityLayout";
-import HomeCommunity from "@/pages/community/Home";
+import HomeCommunity from "@/pages/community/Post";
+import CommentSection from "@/pages/community/Comment/CommentSection";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
   {
@@ -54,6 +55,9 @@ export const publicRoutes = [
   },
     // community
   { path: routes.HomeCommunity, component: HomeCommunity, layout: CommunityLayout },
+
+  { path: routes.test, component: CommentSection, layout: null },
+
 ];
 
 export const privateRoutes = [

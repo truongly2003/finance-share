@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
