@@ -1,0 +1,36 @@
+ useEffect(() => {
+    const socket = new SockJS("http://localhost:8082/community-service/ws");
+    const client = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000,
+      debug: (msg) => console.log("STOMP Debug:", msg),
+    });
+
+    const subscriptions = [];
+
+    client.onConnect = () => {
+      console.log("Đã kết nối WebSocket");
+      posts.forEach((post) => {
+        const subscription = client.subscribe(
+          `/topic/post/likes/${post.id}`,
+          (message) => {
+            const likesCount = JSON.parse(message.body);
+            console.log(`Likes count for post ${post.id}:`, likesCount);
+            dispatch(updatePostLikes({ postId: post.id, likesCount }));
+          }
+        );
+        subscriptions.push(subscription);
+      });
+    };
+
+    client.onStompError = (error) => {
+      console.error("Lỗi kết nối WebSocket:", error);
+    };
+
+    client.activate();
+
+    return () => {
+      subscriptions.forEach((sub) => sub.unsubscribe());
+      client.deactivate().then(() => console.log("Đã ngắt kết nối WebSocket"));
+    };
+  }, [posts, dispatch]);

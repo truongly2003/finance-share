@@ -233,9 +233,9 @@ const Overview = () => {
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-purple-600">Overview</h2>
-          <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+          {/* <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
             cry huh huh
-          </button>
+          </button> */}
         </div>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-4">

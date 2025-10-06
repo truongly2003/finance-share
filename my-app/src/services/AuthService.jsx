@@ -25,12 +25,19 @@ export const loginWithOAuth = async (provider, token) => {
 };
 export const loginWithEmail = async (data) => {
   try {
-    const response = await httpRequest.post(`/user-service/api/auth/login`, data);
+    const response = await axios.post(
+      `http://localhost:8888/user-service/api/auth/login`,
+      data,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(error);
   }
 };
+
 // const AuthService = {
 
 //   refreshToken: async (refreshToken) => {

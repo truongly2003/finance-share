@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/overview")
+@RequestMapping("/overview")
 public class OverviewController {
     private final IOverviewService overviewService;
     public OverviewController(IOverviewService overviewService, IOverviewService overviewService1) {

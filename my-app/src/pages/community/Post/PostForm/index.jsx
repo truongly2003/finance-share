@@ -1,23 +1,29 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createPost } from "@/features/post/postSlice";
-const PostForm = ({ onClose }) => {
-  const [post, setPost] = useState({
-    userId: "123",
-    title: "Hello World!",
-    content: "This is my first post.",
-    mediaUrls: [
-      "http://example.com/image1.jpg",
-      "http://example.com/image2.jpg",
-    ],
-  });
-
-  const dispatch = useDispatch();
+import { postApi } from "@/services/community/PostService";
+import useNotification from "@/context/useNotification";
+import useAuth from "@/context/useAuth";
+const PostForm = ({ onClose, onSuccess }) => {
+  const {userId}= useAuth();
+  console.log(userId)
+  const { notify } = useNotification();
+  const [post, setPost] = useState(
+    {
+      userId: userId,
+      title: "",
+      content: "",
+      mediaUrls: [
+        "http://example.com/image1.jpg",
+        "http://example.com/image2.jpg",
+      ],
+    }
+  );
+ 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPost((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     const newMediaUrls = files.map((file) => URL.createObjectURL(file));
@@ -26,10 +32,22 @@ const PostForm = ({ onClose }) => {
       mediaUrls: [...prev.mediaUrls, ...newMediaUrls],
     }));
   };
-  const handleSubmit = () => {
-    dispatch(createPost(post));
+  const handleSubmit = async () => {
+    try {
+      let response;
+      if (post.id) {
+        response = await postApi.updatePost(post.id, post);
+      } else {
+        response = await postApi.addPost(post);
+      }
+      notify(response.message, response.code === 200 ? "success" : "error");
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+    }
   };
-
+  
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-md p-6 max-w-3xl w-full">
@@ -98,16 +116,17 @@ const PostForm = ({ onClose }) => {
           </div>
           <div className="flex justify-end space-x-4">
             <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              onClick={() => handleSubmit()}
+            >
+              Save
+            </button>
+       
+            <button
               onClick={onClose}
               className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
             >
               Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              onClick={() => handleSubmit()}
-            >
-              Post
             </button>
           </div>
         </div>
@@ -116,6 +135,8 @@ const PostForm = ({ onClose }) => {
   );
 };
 PostForm.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
+
 };
 export default PostForm;

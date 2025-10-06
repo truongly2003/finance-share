@@ -21,13 +21,14 @@ import CheckEmail from "@/pages/client/Authentication/CheckEmail";
 import VerifyEmail from "@/pages/client/Authentication/VerifyEmail";
 import ForgotPassword from "@/pages/client/Password/ForgotPassword";
 import ResetPassword from "@/pages/client/Password/ResetPassword";
-import Groups from "@/pages/client/Groups";
+// import Groups from "@/pages/client/Groups";
 import GroupDetail from "@/pages/client/GroupDetail";
 import Setting from "@/pages/client/Setting";
 import { GroupProvider } from "@/context/GroupContext";
 import CommunityLayout from "@/layouts/CommunityLayout";
 import HomeCommunity from "@/pages/community/Post";
 import CommentSection from "@/pages/community/Comment/CommentSection";
+import MyPost from "@/pages/community/MyPost";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
   {
@@ -42,7 +43,6 @@ export const publicRoutes = [
   { path: routes.VerifyEmail, component: VerifyEmail, layout: null },
   { path: routes.ForgetPassword, component: ForgotPassword, layout: null },
   { path: routes.ResetPassword, component: ResetPassword, layout: null },
-
   {
     path: routes.AuthCallBackGoogle,
     component: () => <AuthCallback provider="google" />,
@@ -53,18 +53,13 @@ export const publicRoutes = [
     component: () => <AuthCallback provider="facebook" />,
     layout: null,
   },
-    // community
   { path: routes.HomeCommunity, component: HomeCommunity, layout: CommunityLayout },
-
   { path: routes.test, component: CommentSection, layout: null },
-
 ];
-
 export const privateRoutes = [
-  // { path: routes.Transaction, component: Transaction, layout: DefaultLayout },
   { path: routes.Overview, component: Overview, layout: TransactionLayout },
   { path: routes.Setting, component: Setting, layout: TransactionLayout },
-
+  { path: routes.MyPost, component: MyPost, layout: CommunityLayout },
   {
     path: routes.GroupDetail,
     component: () => (
@@ -74,10 +69,8 @@ export const privateRoutes = [
     ),
     layout: TransactionLayout,
   },
-
   { path: routes.Budget, component: Budget, layout: TransactionLayout },
-  { path: routes.Groups, component: Groups, layout: TransactionLayout },
-
+  // { path: routes.Groups, component: Groups, layout: TransactionLayout },
   {
     path: routes.BudgetDetail,
     component: BudgetDetail,
@@ -85,7 +78,4 @@ export const privateRoutes = [
   },
   { path: routes.Goal, component: Goal, layout: TransactionLayout },
   { path: routes.GoalDetail, component: GoalDetail, layout: TransactionLayout },
-
-
-
 ];

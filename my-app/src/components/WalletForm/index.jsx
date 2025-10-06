@@ -117,7 +117,7 @@ function WalletForm({ initialWallet, onClose, onSuccess }) {
               className="bg-red-500 text-white px-4 py-2 rounded"
               onClick={handleDelete}
             >
-              Xóa ví
+              Delete
             </button>
           )}
 

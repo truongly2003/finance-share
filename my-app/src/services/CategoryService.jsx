@@ -1,7 +1,7 @@
 import httpRequest from "@/utils/httpRequest";
 export const getAllCategory=async(userId)=>{
     try {
-        const response = await httpRequest.get(`/category?userId=${userId}`);
+        const response = await httpRequest.get(`/finance-service/category?userId=${userId}`);
         return response.data
     } catch (error) {
         console.error(error);
@@ -9,7 +9,7 @@ export const getAllCategory=async(userId)=>{
 }
 export const getCategoryById=async(categoryId)=>{
     try {
-        const response = await httpRequest.get(`/category/category-detail?categoryId=${categoryId}`);
+        const response = await httpRequest.get(`/finance-service/category/category-detail?categoryId=${categoryId}`);
         return response.data
     } catch (error) {
         console.error(error);
@@ -17,7 +17,7 @@ export const getCategoryById=async(categoryId)=>{
 }
 export const addCategory=async (data) => {
     try {
-        const response = await httpRequest.post("/category",data)
+        const response = await httpRequest.post("/finance-service/category",data)
         return response.data
     } catch (error) {
         console.error(error);
@@ -25,7 +25,7 @@ export const addCategory=async (data) => {
 }
 export const updateCategory=async (id,userId,data) => {
     try {
-        const response = await httpRequest.put(`/category?userId=${userId}&categoryId=${id}`,data)
+        const response = await httpRequest.put(`/finance-service/category?userId=${userId}&categoryId=${id}`,data)
         return response.data
     } catch (error) {
         console.error(error);
@@ -33,7 +33,7 @@ export const updateCategory=async (id,userId,data) => {
 }
 export const deleteCategory=async (id,userId) => {
     try {
-        const response = await httpRequest.delete(`/category?categoryId=${id}&userId=${userId}`)
+        const response = await httpRequest.delete(`/finance-service/category?categoryId=${id}&userId=${userId}`)
         return response.data
     } catch (error) {
         console.error(error);

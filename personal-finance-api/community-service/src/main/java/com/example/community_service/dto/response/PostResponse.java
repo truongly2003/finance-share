@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 @Data
 @Builder
@@ -23,4 +24,6 @@ public class PostResponse {
     private List<String> likes = new ArrayList<>();
     private int commentCount;
     private int likesCount;
+
+    private List<String> topic = new ArrayList<>();
 }

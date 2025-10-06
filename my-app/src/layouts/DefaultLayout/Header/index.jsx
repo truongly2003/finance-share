@@ -13,12 +13,10 @@ const Header = () => {
   };
   const { isAuthenticated, logout } = useAuth();
   return (
-    <header className="flex justify-between items-center p-4  bg-white shadow">
+    <header className="flex justify-between items-center p-4  bg-white ">
       <div className=" font-bold">
         <Link to="/">
-          <h1 className="text-2xl font-bold text-purple-600">
-            $PhiPho Finance
-          </h1>
+          {/* <h1 className="text-2xl font-bold text-purple-600">Smart Money</h1> */}
         </Link>
       </div>
       <nav className="flex items-center gap-8">

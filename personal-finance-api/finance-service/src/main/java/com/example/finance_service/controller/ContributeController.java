@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/contribute")
+@RequestMapping("/contribute")
 public class ContributeController {
     final IGoalContributionService goalContribution;
 

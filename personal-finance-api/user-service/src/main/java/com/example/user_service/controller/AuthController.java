@@ -23,7 +23,10 @@ public class AuthController {
     public ResponseEntity<?> Login(@RequestBody LoginRequest requests) {
         return ResponseEntity.ok(authService.handleLogin(requests));
     }
-
+//    @PostMapping("/test")
+//    public ResponseEntity<?> test(@RequestBody String data) {
+//        return ResponseEntity.ok("ok");
+//    }
     @GetMapping("/user")
     public ResponseEntity<UserResponse> getUser(@RequestParam String userId) {
         return ResponseEntity.ok(authService.getUser(userId));

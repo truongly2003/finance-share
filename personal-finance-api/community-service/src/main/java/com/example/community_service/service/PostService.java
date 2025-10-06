@@ -31,6 +31,7 @@ public class PostService {
                     PostResponse postResponse = postMapper.toPostResponse(post);
                     postResponse.setLikesCount(post.getLikesCount());
                     postResponse.setUserName(getUsername(post.getUserId()));
+
                     return postResponse;
                 }).toList();
     }

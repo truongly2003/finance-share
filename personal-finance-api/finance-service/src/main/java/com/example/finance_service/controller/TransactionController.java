@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transaction")
+@RequestMapping("/transaction")
 public class TransactionController {
     private final ITransactionService transactionService;
 

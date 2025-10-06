@@ -62,7 +62,7 @@ spring:
             user-name-attribute: id
 jwt:
   secret: ${SECRET}
-  access-token-expiration: 1000000    # 5 minutes
+  access-token-expiration: 10000000    # 5 minutes
   refresh-token-expiration: 2000000  # 7 days
 
 #eureka:

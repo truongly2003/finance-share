@@ -24,4 +24,5 @@ public class Post {
     private List<String> likes = new ArrayList<>();
     private int commentCount;
     private int likesCount;
+    private List<String> topic = new ArrayList<>();
 }

@@ -20,4 +20,5 @@ public class PostRequest {
     private LocalDateTime updatedAt;
     private List<String> likes = new ArrayList<>();
     private int commentCount;
+    private List<String> topic = new ArrayList<>();
 }

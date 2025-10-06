@@ -29,6 +29,7 @@ function Login() {
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  // login
   const handleLogin = async () => {
     try {
       const response = await loginWithEmail(data);
@@ -38,7 +39,7 @@ function Login() {
         localStorage.setItem("accessToken", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("userId", response.userId);
-        navigate("/");
+        navigate("/community");
       } else {
         notify("Incorrect email or password 🎉", "error");
         navigate("/login");
@@ -46,6 +47,7 @@ function Login() {
     } catch (error) {
       console.log(error);
     }
+    
   };
   // login google
   const handleLoginWithGoogle = async () => {
@@ -53,7 +55,7 @@ function Login() {
       const response = await axios.get(
         "http://localhost:8080/api/oauth/google"
       );
-      
+
       window.location.href = response.data.authUrl;
     } catch (error) {
       console.error("Lỗi khi gọi backend để đăng nhập với Google", error);
@@ -72,6 +74,7 @@ function Login() {
       console.error("Lỗi khi gọi backend để đăng nhập với Facebook", error);
     }
   };
+ 
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
@@ -108,7 +111,8 @@ function Login() {
           </div>
           <div className="flex justify-between text-sm text-black">
             <label>
-              <input type="checkbox" className="mr-2 accent-white" /> Remember password
+              <input type="checkbox" className="mr-2 accent-white" /> Remember
+              password
             </label>
             <Link to="/forgot-password" className="text-blac hover:underline">
               Forget password?
@@ -129,27 +133,27 @@ function Login() {
                 className="p-2 bg-white border rounded "
                 onClick={handleLoginWithGoogle}
               >
-                <Google className="text-purple-500"/>
+                <Google className="text-purple-500" />
               </button>
               <button
                 className="p-2 bg-white border rounded "
                 onClick={handleLoginWithFacebook}
               >
-                <Facebook className="text-purple-500"/>
+                <Facebook className="text-purple-500" />
               </button>
               <button className="p-2 bg-white border rounded ">
-                <Twitter className="text-purple-500"/>
+                <Twitter className="text-purple-500" />
               </button>
               <button className="p-2 bg-white border rounded ">
-                <LinkedIn className="text-purple-500"/>
+                <LinkedIn className="text-purple-500" />
               </button>
             </div>
           </div>
 
           <div className="mt-4 text-center text-sm text-black">
-          You do not have an account?{" "}
+            You do not have an account?{" "}
             <Link to="/signup" className="text-blac hover:underline">
-            Sign Up now
+              Sign Up now
             </Link>
           </div>
         </div>

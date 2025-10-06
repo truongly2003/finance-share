@@ -23,6 +23,7 @@ function Transaction() {
 
   const fetchTransactions = useCallback(async () => {
     try {
+      if (!walletId) return;
       let response;
       if (startDate && endDate) {
         response = await getAllTransactionsByUserIdAndFilterRange(
@@ -34,14 +35,14 @@ function Transaction() {
       } else {
         response = await getAllTransactionByUserIdAndPeriod(
           userId,
-          filter,
+          'year',
           walletId
         );
       }
-      if (transaction.data) {
+      if (response.data) {
         setTransactions(response.data);
-      }else{
-        setTransactions([])
+      } else {
+        setTransactions([]);
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -53,7 +54,7 @@ function Transaction() {
   }, [fetchTransactions]);
 
   const listCategories = transaction.map((item) => item.categoryName);
-
+  // console.log(transaction)
   const groupedTransactions = transaction.reduce((acc, item) => {
     let dateKey;
     if (filter === "day") {

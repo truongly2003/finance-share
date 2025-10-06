@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/goal")
+@RequestMapping("/goal")
 public class GoalController {
     private final IGoalService goalService;
 
     public GoalController(IGoalService goalService) {
         this.goalService = goalService;
     }
-
+    @GetMapping("/te")
+    public ResponseEntity<String> getGoals() {
+        return ResponseEntity.ok("ok");
+    }
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<GoalResponse>>> getAllBudgetByUserId(@RequestParam String userId) {
         List<GoalResponse> goalResponses = goalService.getAllGoalByUserId(userId);

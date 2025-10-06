@@ -32,6 +32,8 @@ const routes={
 
     // community
     HomeCommunity:'/community',
+    MyPost: 'my-post',
+    Friend: 'friend',
     test:'/test'
 }
 export default routes

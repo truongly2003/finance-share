@@ -1,7 +1,7 @@
 import httpRequest from "@/utils/httpRequest";
 export const addTransaction = async (data) => {
   try {
-    const response = await httpRequest.post("/transaction", data);
+    const response = await httpRequest.post("/finance-service/transaction", data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -10,7 +10,7 @@ export const addTransaction = async (data) => {
 
 export const getTransactionById = async (id) => {
   try {
-    const response = await httpRequest.get(`/transaction?transactionId=${id}`);
+    const response = await httpRequest.get(`/finance-service/transaction?transactionId=${id}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,7 +22,7 @@ export const getAllTransactionByUserIdAndPeriod = async (
 ) => {
   try {
     const response = await httpRequest.get(
-      `/transaction/filter?userId=${userId}&filterType=${filterType}&walletId=${walletId}`
+      `/finance-service/transaction/filter?userId=${userId}&filterType=${filterType}&walletId=${walletId}`
     );
     return response.data;
   } catch (error) {
@@ -38,7 +38,7 @@ export const getAllTransactionsByUserIdAndFilterRange = async (
 ) => {
   try {
     const response = await httpRequest.get(
-      `/transaction/filter-range?userId=${userId}&startDate=${startDate}&endDate=${endDate}&walletId=${walletId}`
+      `/finance-service/transaction/filter-range?userId=${userId}&startDate=${startDate}&endDate=${endDate}&walletId=${walletId}`
     );
     return response.data;
   } catch (error) {
@@ -47,7 +47,7 @@ export const getAllTransactionsByUserIdAndFilterRange = async (
 };
 export const updateTransaction = async (id, data) => {
   try {
-    const response = await httpRequest.put(`transaction/${id}`, data);
+    const response = await httpRequest.put(`/finance-service/transaction/${id}`, data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -56,7 +56,7 @@ export const updateTransaction = async (id, data) => {
 export const deleteTransaction = async (id) => {
   try {
     const response = await httpRequest.delete(
-      `/transaction?transactionId=${id}`
+      `/finance-service/transaction?transactionId=${id}`
     );
     return response.data;
   } catch (error) {
@@ -71,7 +71,7 @@ export const getAllTransactionByUserIdAndBudgetId = async (
 ) => {
   try {
     const response = await httpRequest.get(
-      `/transaction/budget-list?userId=${userId}&budgetId=${budgetId}`
+      `/finance-service/transaction/budget-list?userId=${userId}&budgetId=${budgetId}`
     );
     return response.data;
   } catch (error) {

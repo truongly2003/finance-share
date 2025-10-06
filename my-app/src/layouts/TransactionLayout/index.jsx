@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-import { BarChart2, DollarSign, PieChart, Target, Users,Settings2 } from "lucide-react";
+import { BarChart2, DollarSign, PieChart, Target,Settings2 } from "lucide-react";
 import Header from "../DefaultLayout/Header";
 import WalletCard from "@/components/Wallet";
 
@@ -10,15 +10,15 @@ function TransactionLayout({ children }) {
     { to: "/transaction", label: "Transactions", Icon: DollarSign },
     { to: "/budget", label: "Budgets", Icon: PieChart },
     { to: "/goal", label: "Goals", Icon: Target },
-    { to: "/groups", label: "Groups", Icon: Users },
+    // { to: "/groups", label: "Groups", Icon: Users },
     { to: "/setting", label: "Setting", Icon: Settings2 },
   ];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar - Fixed */}
-      <div className="fixed top-0 left-0 w-80 bg-white shadow text-black h-screen p-6 flex flex-col overflow-y-auto">
-        <h2 className="text-2xl text-purple-500 font-bold mb-8">Smart Money</h2>
+      <div className="fixed top-0 left-0 w-80 bg-white shadow text-black h-screen p-6 flex flex-col ">
+        {/* <h2 className="text-2xl text-purple-500 font-bold mb-8">Smart Money</h2> */}
         <div className="mb-6">
           <WalletCard />
         </div>
@@ -49,7 +49,7 @@ function TransactionLayout({ children }) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col ml-80">
         {/* Header - Fixed */}
-        <div className="fixed top-0 left-80 right-0 bg-white shadow-md z-10">
+        <div className="fixed top-0 left-[320px]  right-0 bg-white shadow-md z-10">
           <Header />
         </div>
 

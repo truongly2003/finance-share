@@ -21,6 +21,7 @@ export default function Budget() {
       console.error(error);
     }
   }, [userId]);
+
   const filteredBudgets = budgets.filter((budget) => {
     const currentDate = new Date();
     const endDate = new Date(budget.endDate);
