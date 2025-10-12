@@ -15,68 +15,82 @@ const CommentItem = ({
   childrenComment = [],
   postId,
   commentId,
-}) => {
-  const timeFromNow = formatTime(time)
-  const [showChildren, setShowChildren] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const handleViewAllComments = () => {
-    setShowChildren(!showChildren);
-  };
 
+  // active comment
+  activeCommentId,
+  setActiveCommentId,
+}) => {
+  const [showChildren, setShowChildren] = useState(false);
+  const timeFromNow = formatTime(time);
   const initial = userName[0]?.toUpperCase() || "";
+  const isChatVisiable = activeCommentId === commentId;
   return (
-    <div className="flex items-start space-x-2 p-2 max-w-xl">
-      <div className="w-8 h-8 rounded-full border flex items-center justify-center  font-semibold">
-        {initial}
-      </div>
-      <div>
-        <div className="bg-gray-100 rounded-lg px-3 py-2 max-w-xs">
-          <p className="font-semibold text-sm">{userName}</p>
-          <p className="text-sm">{content}</p>
+    <div className="mt-3">
+      <div className="flex items-start space-x-2">
+        <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold text-sm">
+          {initial}
         </div>
 
-        {/* Thời gian, thích, trả lời */}
-        <div className="flex space-x-3 text-xs text-gray-500 mt-1 ml-1">
-          <span>{timeFromNow}</span>
-          <span className="cursor-pointer hover:underline">Thích</span>
-          <span
-            className="cursor-pointer hover:underline"
-            onClick={() => setShowChat(true)}
-          >
-            Trả lời
-          </span>
-          {showChat && (
-            <div className="ml-10">
+        <div className="flex-1">
+          <div className="bg-gray-100 rounded-2xl px-3 py-2 inline-block">
+            <span className="block text-sm font-semibold text-blue-600">
+              {userName}
+            </span>
+            <span className="text-sm text-gray-800">{content}</span>
+          </div>
+
+          <div className="flex items-center space-x-3 text-xs text-gray-500 mt-1 ml-1">
+            <span>{timeFromNow}</span>
+            <button className="hover:underline">Thích</button>
+            <button
+              className="hover:underline"
+              onClick={() =>
+                setActiveCommentId(isChatVisiable ? null : commentId)
+              }
+            >
+              Phản hồi
+            </button>
+          </div>
+
+          {isChatVisiable && (
+            <div className="ml-10 mt-2">
               <ChatInput postId={postId} commentId={commentId} />
             </div>
           )}
+
+          {childrenComment.length > 0 && (
+            <div className="ml-10 mt-1">
+              {!showChildren ? (
+                <button
+                  onClick={() => setShowChildren(true)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Xem {childrenComment.length} phản hồi
+                </button>
+              ) : (
+                <>
+                  {childrenComment.map((child, i) => (
+                    <CommentItem
+                      key={i}
+                      userName={child.userName}
+                      time={child.createdAt}
+                      content={child.content}
+                      childrenComment={child.children}
+                      postId={postId}
+                      commentId={child.id}
+                    />
+                  ))}
+                  <button
+                    onClick={() => setShowChildren(false)}
+                    className="text-sm text-blue-600 hover:underline ml-10"
+                  >
+                    Ẩn phản hồi
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
-
-        {childrenComment.length > 0 && (
-          <div className="text-xs text-gray-500 mt-1 ml-1">
-            <button className="hover:underline" onClick={handleViewAllComments}>
-              {!showChildren
-                ? `View all ${childrenComment.length} comments`
-                : `hide ${childrenComment.length} comments`}
-            </button>
-          </div>
-        )}
-
-        {/* Render child comments */}
-        {showChildren && childrenComment.length > 0 && (
-          <div className="ml-10 mt-2">
-            {childrenComment.map((child, index) => (
-              <CommentItem
-                key={index}
-                userName={child.userName || "giao su"}
-                time={child.createdAt}
-                content={child.content}
-                commentId={child.id}
-                childrenComment={child.children}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -85,6 +99,7 @@ const CommentItem = ({
 function Comment({ postId, onClose }) {
   const [comments, setComments] = useState([]);
   const [stompClient, setStompClient] = useState(null);
+  const [activeCommentId, setActiveCommentId] = useState(null);
 
   const fetchComments = async () => {
     try {
@@ -105,12 +120,11 @@ function Comment({ postId, onClose }) {
     const socket = new SockJS("http://localhost:8082/community-service/ws");
     const client = new Client({
       webSocketFactory: () => socket,
-      debug: (msg) => console.log("STOMP Debug:", msg), // Debug chi tiết
-      reconnectDelay: 5000, // Tự động thử lại sau 5 giây nếu mất kết nối
+      debug: (msg) => console.log("STOMP Debug:", msg),
+      reconnectDelay: 5000,
     });
 
     client.onConnect = () => {
-      console.log("Đã kết nối WebSocket");
       client.subscribe(`/topic/comments/${postId}`, (message) => {
         const newComment = JSON.parse(message.body);
         if (newComment && newComment.id) {
@@ -119,7 +133,15 @@ function Comment({ postId, onClose }) {
             if (newComment.parentCommentId) {
               return prev.map((comment) =>
                 comment.id === newComment.parentCommentId
-                  ? { ...comment, children: [newComment, ...comment.children.filter(c=>c.id!==newComment.id)] }
+                  ? {
+                      ...comment,
+                      children: [
+                        newComment,
+                        ...comment.children.filter(
+                          (c) => c.id !== newComment.id
+                        ),
+                      ],
+                    }
                   : comment
               );
             }
@@ -130,54 +152,84 @@ function Comment({ postId, onClose }) {
     };
 
     client.onStompError = (error) => {
-      console.error("Lỗi kết nối WebSocket:", error);
+      console.error("Lỗi WebSocket:", error);
     };
 
-    client.activate(); // Kích hoạt kết nối
+    client.activate();
     setStompClient(client);
   };
-  //
+
   const disconnectWebSocket = () => {
-    if (stompClient) {
-      stompClient.deactivate(() => console.log("Đã ngắt kết nối WebSocket"));
-    }
+    if (stompClient) stompClient.deactivate();
   };
 
-  // render
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative">
-        <div>
+    <div className="fixed inset-0 z-50 flex justify-end">
+     
+      <div
+        className="absolute inset-0 bg-black bg-opacity-40"
+        onClick={onClose}
+      />
+
+      <div
+        className="relative bg-white h-full w-full sm:w-[450px] md:w-[40%] shadow-2xl transform translate-x-0 animate-slide-left flex flex-col"
+        style={{ animation: "slideLeft 0.3s ease-out" }}
+      >
+        <div className="p-4 border-b flex justify-between items-center">
+          <h2 className="text-lg font-semibold">Bình luận</h2>
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 text-xl"
           >
             ✕
           </button>
-          <h2 className="text-lg font-semibold mb-4">Comments</h2>
-          <div className="max-h-96 overflow-y-auto">
-            {comments.map((item, index) => {
-              return (
-                <CommentItem
-                  key={index}
-                  userName={item.userName || "giao su"}
-                  time={item.createdAt}
-                  content={item.content}
-                  commentId={item.id}
-                  childrenComment={item.children}
-                  postId={postId}
-                />
-              );
-            })}
-          </div>
         </div>
-        <ChatInput postId={postId} />
+
+        {/* Danh sách bình luận */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {comments.length === 0 ? (
+            <p className="text-center text-gray-500 text-sm mt-5">
+              Chưa có bình luận nào.
+            </p>
+          ) : (
+            comments.map((item, index) => (
+              <CommentItem
+                key={index}
+                userName={item.userName}
+                time={item.createdAt}
+                content={item.content}
+                commentId={item.id}
+                childrenComment={item.children}
+                postId={postId}
+                activeCommentId={activeCommentId}
+                setActiveCommentId={setActiveCommentId}
+              />
+            ))
+          )}
+        </div>
+
+        {/* Input bình luận */}
+        <div className="p-4 border-t">
+          <ChatInput postId={postId} />
+        </div>
       </div>
+
+      {/* Hiệu ứng CSS */}
+      <style>
+        {`
+          @keyframes slideLeft {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+        `}
+      </style>
     </div>
   );
 }
+
 Comment.propTypes = {
   onClose: PropTypes.func,
   postId: PropTypes.string,
 };
+
 export default Comment;

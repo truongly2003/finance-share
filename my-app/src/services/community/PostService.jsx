@@ -9,7 +9,15 @@ const postApi = {
       throw error; 
     }
   },
-
+  getAllPostByUserId: async(userId)=>{
+     try {
+      const response = await httpRequest.get(`/community-service/post/getByUserId?userId=${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách bài post:", error);
+      throw error; 
+    }
+  },
   addPost: async (data) => {
     try {
       const response = await httpRequest.post("/community-service/post", data);

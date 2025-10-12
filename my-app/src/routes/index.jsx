@@ -29,6 +29,8 @@ import CommunityLayout from "@/layouts/CommunityLayout";
 import HomeCommunity from "@/pages/community/Post";
 import CommentSection from "@/pages/community/Comment/CommentSection";
 import MyPost from "@/pages/community/MyPost";
+import DetailPost from "@/pages/community/Post/DetailPost";
+import CreatePost from "@/pages/community/Post/CreatePost";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
   {
@@ -55,11 +57,15 @@ export const publicRoutes = [
   },
   { path: routes.HomeCommunity, component: HomeCommunity, layout: CommunityLayout },
   { path: routes.test, component: CommentSection, layout: null },
+
+  { path: routes.DetailPost, component: DetailPost, layout: CommunityLayout },
+  
+  { path: routes.CreatePost, component: CreatePost, layout: CommunityLayout },
+  { path: routes.MyPost, component: MyPost, layout: CommunityLayout },
 ];
 export const privateRoutes = [
   { path: routes.Overview, component: Overview, layout: TransactionLayout },
   { path: routes.Setting, component: Setting, layout: TransactionLayout },
-  { path: routes.MyPost, component: MyPost, layout: CommunityLayout },
   {
     path: routes.GroupDetail,
     component: () => (

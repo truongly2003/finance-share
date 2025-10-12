@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ public class PostService {
     private final UserClient userClient;
     private final CommentRepository commentRepository;
     private final SimpMessagingTemplate messagingTemplate;
+
     public List<PostResponse> getAllPosts() {
         return postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(post -> {
@@ -88,9 +90,25 @@ public class PostService {
         return postMapper.toPostResponse(post);
     }
 
+
+    public List<PostResponse> getAllPostsByUserId(String userId) {
+        return postRepository.findAllByUserIdOrderByCreatedAtDesc(userId).stream()
+                .map(post-> {
+                    PostResponse postResponse = postMapper.toPostResponse(post);
+                    postResponse.setLikesCount(post.getLikesCount());
+                    postResponse.setUserName(getUsername(post.getUserId()));
+                    return postResponse;
+                }).toList();
+    }
+    @Transactional
     public void deletePost(String postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết với id: " + postId));
+
+        commentRepository.deleteByPostId(postId);
+
+        // Xóa bài viết
         postRepository.deleteById(postId);
     }
+
 }

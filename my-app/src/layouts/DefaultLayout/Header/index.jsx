@@ -13,26 +13,31 @@ const Header = () => {
   };
   const { isAuthenticated, logout } = useAuth();
   return (
-    <header className="flex justify-between items-center p-4  bg-white ">
+    <header className="flex justify-between items-center p-4  bg-white ml-8 mr-8 ">
       <div className=" font-bold">
         <Link to="/">
-          {/* <h1 className="text-2xl font-bold text-purple-600">Smart Money</h1> */}
+          <div className="w-8 h-8 bg-purple-500 rounded flex items-center justify-center text-white font-bold">
+            F
+          </div>
         </Link>
       </div>
       <nav className="flex items-center gap-8">
-        <Link to="/transaction">Transaction</Link>
-        <Link to="/community">Blog</Link>
-        <Link>About</Link>
+        <Link to="/transaction">Giao dịch</Link>
+        <Link to="/community">Bài viết</Link>
+        <Link>Về chúng tôi</Link>
         {isAuthenticated() ? (
           <div>
             <div className="flex items-center space-x-4 cursor-pointer">
               {/* notify */}
               <div
-                className="relative"
-                onMouseEnter={() => setIsShowNotifications(true)}
-                onMouseLeave={() => setIsShowNotifications(false)}
+                className="relative "
+
+                // onMouseLeave={() => setIsShowNotifications(false)}
               >
-                <button className="relative  rounded-md text-purple-500 mt-[10px] ">
+                <button
+                  onClick={() => setIsShowNotifications(!isShowNotifications)}
+                  className="relative  rounded-md text-purple-500 mt-[10px]  px-4"
+                >
                   <BellRing size={22} />
                 </button>
                 {isShowNotifications && (

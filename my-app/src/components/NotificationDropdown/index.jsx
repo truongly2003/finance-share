@@ -82,7 +82,7 @@ export default function NotificationDropdown({ onClose }) {
   return (
     <div className="relative">
       {/* Dropdown */}
-      <div className="absolute right-0 z-50 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-opacity duration-300">
+      <div className="absolute right-0 z-50 w-96 bg-white rounded-lg shadow-xl overflow-hidden transition-opacity duration-300">
         <div>
           <div className="p-3 font-semibold text-gray-700 flex justify-between bg-gray-100 border-b border-gray-200">
             <span>Thông báo</span>

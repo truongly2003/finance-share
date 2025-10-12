@@ -2,20 +2,20 @@ import { Phone, MapPin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 const Footer = () => {
   return (
-    <footer className=" bg-purple-200  py-8">
+    <footer className="bg-white  py-8">
       {/* Phần thông tin liên hệ */}
       <div className="flex justify-around items-center  ">
         <div className="flex items-center space-x-3">
           <MapPin />
           <div>
-            <p className="text-[#333]">Address</p>
+            <p className="text-[#333]">Địa chỉ</p>
             <p>2003 SGU</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
           <Phone />
           <div>
-            <p className="text-[#333]">Phone</p>
+            <p className="text-[#333]">Số điện thoại</p>
             <p>444-666-22222</p>
           </div>
         </div>
@@ -23,7 +23,7 @@ const Footer = () => {
           <Mail />
           <div>
             <p className="text-[#333]"> Mail</p>
-            <p>info@smart.com</p>
+            <p>Truong@smart.com</p>
           </div>
         </div>
       </div>
@@ -34,29 +34,29 @@ const Footer = () => {
         <div>
           {" "}
           <h3 className="text-xl font-bold text-purple-600">
-            Smart Spending Management
+            Quản lý chi tiêu thông minh
           </h3>
         </div>
         <div>
           <ul className="mt-2 flex flex-row space-x-4">
             <li>
               <Link href="#" className="">
-                Abount
+               Về chúng tôi
               </Link>
             </li>
             <li>
               <Link href="#" className="">
-                Transaction
+                Giao dịch
               </Link>
             </li>
             <li>
               <Link href="#" className="">
-                Connect
+                Kết nối với chúng tôi
               </Link>
             </li>
             <li>
               <Link href="#" className="">
-                All
+                Tất cả
               </Link>
             </li>
           </ul>
@@ -73,13 +73,13 @@ const Footer = () => {
             href="#"
             className="text-[#333] hover:text-[#f7d794] transition-colors"
           >
-            Clause
+            Điều khoản
           </a>
           <a
             href="#"
             className="text-[#333] hover:text-[#f7d794] transition-colors"
           >
-            Usage policy
+            Chính sách sử dụng
           </a>
         </div>
       </div>

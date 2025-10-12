@@ -16,6 +16,7 @@ const routes={
     SignUp: "/signup",
     LoginPage: "/loginPage",
     HomePage: "/homePage",
+
     // oauth
     AuthCallBackGoogle: "/oauth2/callback/google",
     AuthCallBackFacebook: "/oauth2/callback/facebook",    
@@ -32,7 +33,9 @@ const routes={
 
     // community
     HomeCommunity:'/community',
-    MyPost: 'my-post',
+    DetailPost:'/community/detail-post/:id',
+    CreatePost: '/post/create',
+    MyPost: '/my-post',
     Friend: 'friend',
     test:'/test'
 }
