@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 2001
   servlet:
     context-path: /community-service
 spring:
@@ -8,6 +8,14 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/community_finance
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: 9092
 #eureka:
 #  client:
 #    service-url:

@@ -1,12 +1,12 @@
 server:
-  port: 8081
+  port: 2002
   servlet:
     context-path: /user-service
 spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/user_finance_user
+    url: jdbc:mysql://localhost:3306/user_finance
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
     password: root

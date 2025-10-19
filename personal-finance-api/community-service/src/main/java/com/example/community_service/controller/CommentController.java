@@ -1,6 +1,7 @@
 package com.example.community_service.controller;
 
 import com.example.community_service.dto.request.CommentRequest;
+import com.example.community_service.dto.response.ApiResponse;
 import com.example.community_service.dto.response.CommentResponse;
 import com.example.community_service.entity.Comment;
 import com.example.community_service.repository.CommentRepository;
@@ -26,11 +27,27 @@ public class CommentController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<List<CommentResponse>> getCommentsByPostId(@PathVariable String postId) {
-        return ResponseEntity.ok(commentService.getAllCommentsByPostId(postId));
+        List<CommentResponse> result=commentService.getAllCommentsByPostId(postId);
+
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/children")
     public ResponseEntity<List<CommentResponse>> getCommentChildren(@RequestParam String commentId) {
-        return ResponseEntity.ok(commentService.getCommentChildren(commentId));
+        List<CommentResponse> result=commentService.getCommentChildren(commentId);
+        System.out.println("Returning comments size: " + result.size());
+        System.out.println("xin chao truong dai hoc sai gon: ");
+
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<ApiResponse<Boolean>> deleteComment(@RequestParam String commentId) {
+        boolean deleted = commentService.deleteComment(commentId);
+        if (deleted) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Xóa bài bình luận thành công", true));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(201, "Xóa bình luận thất bại", false));
+        }
     }
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest comment) {

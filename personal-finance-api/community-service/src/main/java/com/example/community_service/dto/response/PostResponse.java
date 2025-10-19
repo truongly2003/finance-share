@@ -26,4 +26,6 @@ public class PostResponse {
     private int likesCount;
 
     private List<String> topic = new ArrayList<>();
+
+    private List<String> shares = new ArrayList<>();
 }

@@ -7,21 +7,35 @@ spring:
     gateway:
       routes:
         - id: finance_service
-          uri: http://localhost:8080
+          uri: http://localhost:2000
           predicates:
             - Path=/finance-service/**
         - id: user_service
-          uri: http://localhost:8081
+          uri: http://localhost:2002
           predicates:
             - Path=/user-service/**
         - id: community_service
-          uri: http://localhost:8082
+          uri: http://localhost:2001
           predicates:
             - Path=/community-service/**
         - id: community_service_ws
-          uri: ws://localhost:8082
+          uri: ws://localhost:2001
           predicates:
               - Path=/community-service/ws/**
+        - id: notification_service
+          uri: http://localhost:2003
+          predicates:
+            - Path=/notification-service/**
+
+#        - id: notification_service_ws
+#          uri: http://localhost:2003
+#          predicates:
+#            - Path=/notification-service/ws/**
+#          filters:
+#            - StripPrefix=1
+
+
+
 
 
 #eureka:

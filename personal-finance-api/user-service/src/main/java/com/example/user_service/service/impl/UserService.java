@@ -158,8 +158,9 @@ public class UserService implements IUserService {
 
     @Override
     public String getUserName(String userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        assert user != null;
+        System.out.println("DEBUG: userId nhận được = " + userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user với ID: " + userId));
         return user.getUserName();
     }
 

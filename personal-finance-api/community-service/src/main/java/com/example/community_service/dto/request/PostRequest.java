@@ -21,4 +21,5 @@ public class PostRequest {
     private List<String> likes = new ArrayList<>();
     private int commentCount;
     private List<String> topic = new ArrayList<>();
+    private List<String> shares = new ArrayList<>();
 }

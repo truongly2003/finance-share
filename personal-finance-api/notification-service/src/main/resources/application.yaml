@@ -1,0 +1,19 @@
+server:
+  port: 2003
+  servlet:
+    context-path: /notification-service
+spring:
+  application:
+    name: notification-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notification_finance
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: 9092
+
+

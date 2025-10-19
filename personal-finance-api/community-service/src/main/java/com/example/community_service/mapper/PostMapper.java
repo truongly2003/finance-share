@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
     @Mapping(source = "topic", target = "topic")
+    @Mapping(source = "shares", target = "shares")
     PostResponse toPostResponse(Post post);
     Post toPost(PostRequest postRequest);
 }

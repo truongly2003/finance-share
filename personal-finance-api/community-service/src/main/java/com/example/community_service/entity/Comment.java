@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,7 +21,8 @@ public class Comment {
     private String userId;
     private String content;
     private String parentCommentId;
-    private List<String> replies;
+    private List<Comment> children = new ArrayList<>();
+    private List<String> likes = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

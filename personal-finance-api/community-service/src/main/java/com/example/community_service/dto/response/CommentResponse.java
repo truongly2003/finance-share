@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,9 +19,8 @@ public class CommentResponse {
     private String userName;
     private String content;
     private String parentCommentId;
+    private List<String> likes = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<CommentResponse> children;
-
-
 }

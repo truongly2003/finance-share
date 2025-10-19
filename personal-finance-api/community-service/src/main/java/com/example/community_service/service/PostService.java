@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -37,7 +38,13 @@ public class PostService {
                     return postResponse;
                 }).toList();
     }
-
+    public PostResponse getPostById(String postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        PostResponse postResponse = postMapper.toPostResponse(post);
+        postResponse.setUserName(getUsername(post.getUserId()));
+        return postResponse;
+    }
     public int likePost(String postId, String userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
         List<String> likes = post.getLikes();
@@ -84,11 +91,7 @@ public class PostService {
         return postMapper.toPostResponse(updatedPost);
     }
 
-    public PostResponse getPostById(String postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-        return postMapper.toPostResponse(post);
-    }
+
 
 
     public List<PostResponse> getAllPostsByUserId(String userId) {
@@ -101,7 +104,7 @@ public class PostService {
                 }).toList();
     }
     @Transactional
-    public void deletePost(String postId) {
+    public Boolean deletePost(String postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết với id: " + postId));
 
@@ -109,6 +112,24 @@ public class PostService {
 
         // Xóa bài viết
         postRepository.deleteById(postId);
+        return true;
+    }
+    public void sharePost(String postId, String userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.getShares().add(userId);
+        postRepository.save(post);
     }
 
+    public List<String> getListShare(String postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        List<String> shares = post.getShares();
+        List<String> listUserNameShares = new ArrayList<>();
+        for(String share: shares){
+            if(listUserNameShares.contains(userClient.getUsername(share))){
+               continue;
+            }
+            listUserNameShares.add(userClient.getUsername(share));
+        }
+        return listUserNameShares;
+    }
 }

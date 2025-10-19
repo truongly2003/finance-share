@@ -4,6 +4,7 @@ import com.example.community_service.dto.request.PostRequest;
 import com.example.community_service.dto.response.ApiResponse;
 import com.example.community_service.dto.response.PostResponse;
 import com.example.community_service.service.PostService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,13 @@ public class PostController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> deletePost(@RequestParam String postId) {
-        postService.deletePost(postId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ApiResponse<Boolean>> deletePost(@RequestParam String postId) {
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Xóa bài viết thành công", true));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(201, "Xóa bài viết thất bại", false));
+        }
     }
 
     @GetMapping
@@ -54,5 +59,16 @@ public class PostController {
     @GetMapping("/getByUserId")
     public ResponseEntity<List<PostResponse>> getPostByUserId(@RequestParam  String userId){
         return ResponseEntity.ok(postService.getAllPostsByUserId(userId));
+    }
+
+    @PostMapping("/share")
+    public ResponseEntity<String> share(@RequestParam String postId, @RequestParam String userId) {
+        postService.sharePost(postId, userId);
+        return ResponseEntity.ok("Chia sẻ thành công");
+    }
+
+    @GetMapping("/get-list-post-share")
+    public HttpEntity<List<String>> getListSharePost(@RequestParam String postId) {
+        return ResponseEntity.ok(postService.getListShare(postId));
     }
 }

@@ -9,6 +9,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
+    @Mapping(source = "likes", target = "likes")
+    @Mapping(source = "children", target = "children")
     CommentResponse toCommentResponse(Comment comment);
+    @Mapping(source = "likes", target = "likes")
     Comment toComment(CommentRequest commentRequest);
 }

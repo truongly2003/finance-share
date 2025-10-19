@@ -86,12 +86,12 @@ public class AuthService implements IAuthService {
                 } catch (Exception e) {
                     log.error("create wallet fail {}: {}", user.getUserId(), e.getMessage());
                 }
-                return new AuthResponse(true, accessToken, refreshToken, emailExist.get().getUserId());
+                return new AuthResponse(true, accessToken, refreshToken, emailExist.get().getUserId(),emailExist.get().getUserName());
             }
 
         }
 
-        return new AuthResponse(false, "", "", "");
+        return new AuthResponse(false, "", "", "","");
     }
 
     @Override

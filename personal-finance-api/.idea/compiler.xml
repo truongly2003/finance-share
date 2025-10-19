@@ -10,7 +10,16 @@
         <module name="api-gateway" />
         <module name="eureka-server" />
       </profile>
-      <profile name="Annotation profile for finance-service" enabled="true">
+      <profile name="Annotation profile for analytics-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="analytics-service" />
+      </profile>
+      <profile name="Annotation profile for community-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -19,11 +28,11 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
-        <module name="analytics-service" />
         <module name="user-service" />
-        <module name="finance-service" />
+        <module name="common" />
         <module name="community-service" />
         <module name="notification-service" />
+        <module name="finance-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -31,6 +40,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="analytics-service" options="-parameters" />
       <module name="api-gateway" options="-parameters" />
+      <module name="common" options="-parameters" />
       <module name="community-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="finance-service" options="-parameters" />

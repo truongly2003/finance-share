@@ -2,6 +2,8 @@ package com.example.community_service.service;
 
 
 import com.example.community_service.client.UserClient;
+
+//import com.example.community_service.dto.NotificationEventDto;
 import com.example.community_service.dto.request.CommentRequest;
 import com.example.community_service.dto.response.CommentResponse;
 import com.example.community_service.entity.Comment;
@@ -9,9 +11,11 @@ import com.example.community_service.entity.Post;
 import com.example.community_service.mapper.CommentMapper;
 import com.example.community_service.repository.CommentRepository;
 import com.example.community_service.repository.PostRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +23,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.common.dto.NotificationEventDto;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
@@ -28,13 +35,17 @@ public class CommentService {
     private final SimpMessagingTemplate messagingTemplate;
     private final UserClient userClient;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper, PostRepository postRepository, SimpMessagingTemplate messagingTemplate, UserClient userClient) {
-        this.commentRepository = commentRepository;
-        this.commentMapper = commentMapper;
-        this.postRepository = postRepository;
-        this.messagingTemplate = messagingTemplate;
-        this.userClient = userClient;
-    }
+    //    kafka
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    //    kafka
+//    public void test() {
+//        NotificationEventDto notificationEventDto = new NotificationEventDto(
+//                "1", "1", "post", "bạn có bài viết mới", "/post"
+//        );
+//        kafkaTemplate.send("notification_events", notificationEventDto);
+//    }
 
     private String getUsername(String userId) {
         try {
@@ -48,14 +59,8 @@ public class CommentService {
     }
 
     public List<CommentResponse> getAllCommentsByPostId(String postId) {
-        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtDesc(postId);
-//        Map<String, CommentResponse> commentResponseMap = comments.stream()
-//                .map(comment -> {
-//                    CommentResponse response = commentMapper.toCommentResponse(comment);
-//                    response.setUserName(getUsername(comment.getUserId()));
-//                    response.setChildren(new ArrayList<>());
-//                    return response;
-//                }).collect(Collectors.toMap(CommentResponse::getId, c -> c));
+        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
+
         Map<String, CommentResponse> commentResponseMap = new LinkedHashMap<>();
         for (Comment comment : comments) {
             CommentResponse response = commentMapper.toCommentResponse(comment);
@@ -70,16 +75,19 @@ public class CommentService {
 
         for (CommentResponse comment : commentMap) {
             String parentCommentId = comment.getParentCommentId();
+            System.out.println("Returning comments size: " + parentCommentId);
             if (parentCommentId == null) {
                 rootCommentResponses.add(comment);
             } else {
                 // comment children, add to list children in comment parent
                 CommentResponse parent = commentResponseMap.get(parentCommentId);
+
                 if (parent != null) {
                     parent.getChildren().add(comment);
                 }
             }
         }
+        Collections.reverse(rootCommentResponses);
         return rootCommentResponses;
     }
 
@@ -101,16 +109,76 @@ public class CommentService {
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUpdatedAt(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
+
         CommentResponse commentResponse = commentMapper.toCommentResponse(savedComment);
         commentResponse.setUserName(getUsername(comment.getUserId()));
+
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         post.setCommentCount((int) commentRepository.countByPostId(commentRequest.getPostId()));
         post.setUpdatedAt(LocalDateTime.now());
         postRepository.save(post);
-        log.info("Sending WebSocket message to /topic/comments/{}", commentRequest.getPostId());
-        messagingTemplate.convertAndSend("/topic/comments/" + commentRequest.getPostId(), commentResponse);
+
+//        kiểm tra comment có phải reply không
+        Comment parentComment = null;
+        if (commentRequest.getParentCommentId() != null) {
+            parentComment = commentRepository.findById(commentRequest.getParentCommentId())
+                    .orElseThrow(() -> new RuntimeException("Parent comment not found"));
+        }
+        if (parentComment == null) {
+            //        id của chủ bài viết khác với người comment
+            if (!post.getUserId().equals(commentRequest.getUserId())) {
+                String actorName = getUsername(commentRequest.getUserId());
+                NotificationEventDto notificationEventDto = new NotificationEventDto(
+                        post.getUserId(), commentRequest.getUserId(), actorName, "post", "đã bình luận bài viết của bạn", "/community/post/detail-post/" + post.getId()
+                );
+                kafkaTemplate.send("notification_events", notificationEventDto);
+            }
+
+        } else {
+            if (!parentComment.getUserId().equals(commentRequest.getUserId())) {
+                String actorName = getUsername(commentRequest.getUserId());
+                NotificationEventDto notificationEventDto = new NotificationEventDto(
+                        parentComment.getUserId(), commentRequest.getUserId(), actorName, "reply",
+                        "đã trả lời bình luận của bạn", "/community/post/detail-post/" + post.getId()
+                );
+                kafkaTemplate.send("notification_events", notificationEventDto);
+            }
+        }
+
+
         return commentResponse;
+    }
+
+    private void deleteReliesRecursively(String parentCommentId) {
+        // lấy tất cả bình luận con
+        List<Comment> comments = commentRepository.findByParentCommentIdOrderByCreatedAtDesc(parentCommentId);
+        for (Comment comment : comments) {
+            // Xóa đệ quy các bình luận con của bình luận con này
+            deleteReliesRecursively(comment.getId());
+            commentRepository.deleteCommentById(comment.getId());
+        }
+    }
+
+    public boolean deleteComment(String commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
+        //        nếu là comment cha xóa tất cả comment con
+        if (comment.getParentCommentId() == null) {
+            deleteReliesRecursively(commentId);
+        } else {
+            //         nếu là comment con xóa khỏi danh sách children của comment cha
+            Comment parentComment = commentRepository.findById(comment.getParentCommentId()).orElse(null);
+            if (parentComment != null) {
+                parentComment.getChildren().remove(commentId);
+                commentRepository.save(parentComment);
+            }
+        }
+        commentRepository.deleteCommentById(commentId);
+        // cập nhật lại comment count trong post
+        Post post = postRepository.findById(comment.getPostId()).orElse(null);
+        post.setCommentCount((int) commentRepository.countByPostId(comment.getPostId()));
+        postRepository.save(post);
+        return true;
     }
 
 

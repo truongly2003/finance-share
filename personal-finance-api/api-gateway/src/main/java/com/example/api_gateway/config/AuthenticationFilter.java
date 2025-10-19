@@ -24,10 +24,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private final String[] publicEndpoints = {
             "/user-service/api/auth/login",
             "/user-service/api/user",
+            "/user-service/api/email/verify-email",
             "/user-service/api/auth/authenticate",
             "/community-service/post",
             "/community-service/comments",
-            "/community-service"
+            "/community-service",
+            "/notification-service/notifications",
     };
     private final AuthenticateService authenticateService;
 
@@ -42,6 +44,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         if (isPublicEndpoint(url)) {
             return chain.filter(exchange);
         }
+
+
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (CollectionUtils.isEmpty(authHeader))
         {

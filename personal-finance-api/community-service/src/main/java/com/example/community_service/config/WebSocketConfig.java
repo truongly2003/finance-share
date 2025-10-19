@@ -17,8 +17,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:5173")
                 .withSockJS();
-        log.info("WebSocket endpoint /ws registered");
-
     }
 
     @Override
