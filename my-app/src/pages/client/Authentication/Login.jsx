@@ -39,7 +39,9 @@ function Login() {
         localStorage.setItem("accessToken", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("userId", response.userId);
-        navigate("/community");
+        localStorage.setItem("userName", response.userName);
+
+        navigate("/community/post");
       } else {
         notify("Incorrect email or password 🎉", "error");
         navigate("/login");
@@ -47,7 +49,6 @@ function Login() {
     } catch (error) {
       console.log(error);
     }
-    
   };
   // login google
   const handleLoginWithGoogle = async () => {
@@ -74,13 +75,12 @@ function Login() {
       console.error("Lỗi khi gọi backend để đăng nhập với Facebook", error);
     }
   };
- 
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md border bg-white  p-6 rounded-lg shadow-md">
         <h2 className="text-center text-xl font-semibold mb-4 text-black">
-          Login
+          Đăng nhập
         </h2>
         <div>
           <div className="mb-3">
@@ -111,11 +111,11 @@ function Login() {
           </div>
           <div className="flex justify-between text-sm text-black">
             <label>
-              <input type="checkbox" className="mr-2 accent-white" /> Remember
-              password
+              <input type="checkbox" className="mr-2 accent-white" /> Nhớ Mật
+              khẩu
             </label>
             <Link to="/forgot-password" className="text-blac hover:underline">
-              Forget password?
+              Quên mật khẩu
             </Link>
           </div>
 
@@ -123,11 +123,15 @@ function Login() {
             className="mt-4 w-full bg-purple-500 text-black py-2 rounded font-semibold "
             onClick={handleLogin}
           >
-            Login
+            Đăng nhập
           </button>
 
           <div className="mt-4 text-center text-sm text-black">
-            <p>Or login with</p>
+            <div className="flex items-center my-4">
+              <hr className="flex-grow border-gray-300" />
+              <span className="px-3 text-gray-800">Hoặc đăng nhập với</span>
+              <hr className="flex-grow border-gray-300" />
+            </div>
             <div className="flex justify-center gap-3 mt-2">
               <button
                 className="p-2 bg-white border rounded "
@@ -151,9 +155,9 @@ function Login() {
           </div>
 
           <div className="mt-4 text-center text-sm text-black">
-            You do not have an account?{" "}
-            <Link to="/signup" className="text-blac hover:underline">
-              Sign Up now
+            Bạn chưa có tài khoản?{" "}
+            <Link to="/signup" className="text-gray-500 hover:underline ">
+              Đăng ký ngay
             </Link>
           </div>
         </div>

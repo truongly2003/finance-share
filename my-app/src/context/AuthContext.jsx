@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("accessToken") || null
   );
   const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
 
   const login = (newToken) => {
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
     sessionStorage.removeItem("google_oauth_handled");
     sessionStorage.removeItem("facebook_oauth_handled");
     navigate("/login");
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = () => !!token;
   return (
     <AuthContext.Provider
-      value={{ token, isAuthenticated, login, logout, userId }}
+      value={{ token, isAuthenticated, login, logout, userId ,userName}}
     >
       {children}
     </AuthContext.Provider>

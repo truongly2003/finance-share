@@ -59,7 +59,7 @@ public class CommentService {
     }
 
     public List<CommentResponse> getAllCommentsByPostId(String postId) {
-        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
+        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtDesc(postId);
 
         Map<String, CommentResponse> commentResponseMap = new LinkedHashMap<>();
         for (Comment comment : comments) {
@@ -68,7 +68,7 @@ public class CommentService {
             response.setChildren(new ArrayList<>());
             commentResponseMap.put(comment.getId(), response);
         }
-
+//        danh sách comment gốc
         List<CommentResponse> rootCommentResponses = new ArrayList<>();
 
         Collection<CommentResponse> commentMap = commentResponseMap.values();
@@ -87,12 +87,12 @@ public class CommentService {
                 }
             }
         }
-        Collections.reverse(rootCommentResponses);
+
         return rootCommentResponses;
     }
 
     public List<CommentResponse> getCommentChildren(String parentCommentId) {
-        List<Comment> comments = commentRepository.findByParentCommentIdOrderByCreatedAtDesc(parentCommentId);
+        List<Comment> comments = commentRepository.findByParentCommentIdOrderByCreatedAtAsc(parentCommentId);
         List<CommentResponse> commentResponses = comments.stream().map(comment -> {
             CommentResponse response = commentMapper.toCommentResponse(comment);
             response.setUserName(getUsername(comment.getUserId()));
@@ -119,6 +119,8 @@ public class CommentService {
         post.setUpdatedAt(LocalDateTime.now());
         postRepository.save(post);
 
+        LocalDateTime commentTime = savedComment.getCreatedAt();
+
 //        kiểm tra comment có phải reply không
         Comment parentComment = null;
         if (commentRequest.getParentCommentId() != null) {
@@ -129,8 +131,27 @@ public class CommentService {
             //        id của chủ bài viết khác với người comment
             if (!post.getUserId().equals(commentRequest.getUserId())) {
                 String actorName = getUsername(commentRequest.getUserId());
+
+                List<Comment> allComments = commentRepository.findByPostIdOrderByCreatedAtAsc(commentRequest.getPostId());
+                Set<String> distinctPreviousUsers = new LinkedHashSet<>();
+                for (Comment c : allComments) {
+//                    Bỏ người đang comment hiện tại   và và Bỏ chủ bài viết (vì họ là người nhận thông báo).
+                  if(!c.getUserId().equals(commentRequest.getUserId()) && !c.getUserId().equals(post.getUserId())) {
+                      distinctPreviousUsers.add(c.getUserId());
+                  }
+                }
+                String message;
+                int previousCount = distinctPreviousUsers.size();
+                if (previousCount == 0) {
+                    message = "đã bình luận bài viết của bạn";
+                } else if (previousCount == 1) {
+                    message = "và 1 người khác đã bình luận bài viết của bạn";
+                } else {
+                    message = String.format("và %d người khác đã bình luận bài viết của bạn", previousCount);
+                }
+
                 NotificationEventDto notificationEventDto = new NotificationEventDto(
-                        post.getUserId(), commentRequest.getUserId(), actorName, "post", "đã bình luận bài viết của bạn", "/community/post/detail-post/" + post.getId()
+                        post.getUserId(), commentRequest.getUserId(), actorName, "post", message, "/community/post/detail-post/" + post.getId()
                 );
                 kafkaTemplate.send("notification_events", notificationEventDto);
             }

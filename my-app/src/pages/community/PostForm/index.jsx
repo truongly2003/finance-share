@@ -142,14 +142,13 @@
 // export default CreatePost;
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { Plus } from "lucide-react";
 import useNotification from "@/context/useNotification";
 import { postApi } from "@/services/community/PostService";
 import useAuth from "@/context/useAuth";
 import { useNavigate } from "react-router-dom";
-
-export default function CreatePost({ initialPost }) {
-  const navigate=useNavigate()
+import {X} from "lucide-react"
+export default function PostForm({ initialPost,onClose,onSuccess }) {
+  const navigate = useNavigate();
   const { notify } = useNotification();
   const { userId } = useAuth();
   const [post, setPost] = useState(
@@ -183,8 +182,10 @@ export default function CreatePost({ initialPost }) {
         response = await postApi.addPost(newPost);
       }
       notify(response.message, response.code === 200 ? "success" : "error");
-      if(response.code===200){
-        navigate("/community")
+      if (response.code === 200) {
+        onClose()
+        onSuccess()
+        navigate("/community/post");
       }
     } catch (error) {
       console.error("Lỗi khi đăng bài:", error);
@@ -226,118 +227,120 @@ export default function CreatePost({ initialPost }) {
     "Kinh doanh",
     "Khác",
   ];
- 
+
   return (
-    <div className="min-h-screen  flex justify-center items-start py-10 px-4">
-      <div className="w-full max-w-2xl  rounded shadow-md overflow-hidden">
-        {/* Header */}
-        <div className="bg-purple-500 text-white px-6 py-4 flex items-center space-x-2">
-          <div className="bg-white bg-opacity-20 p-1.5 rounded-lg">
-            <Plus className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">Tạo bài viết mới</h2>
-            <p className="text-sm opacity-90">
-              Chia sẻ kiến thức và truyền cảm hứng cho cộng đồng
-            </p>
-          </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b px-8 py-5 flex items-center justify-between rounded-t-2xl">
+          <h2 className="text-2xl font-bold text-gray-800">Tạo bài viết mới</h2>
+          <button
+            onClick={() =>onClose()}
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <X size={24} className="text-gray-600" />
+          </button>
         </div>
-
-        {/* Form content */}
-        <div className="p-6 space-y-4">
-          {/* Tiêu đề */}
+        <div className=" space-y-2">
           <div>
-            <label className="block font-medium mb-1">Tiêu đề bài viết *</label>
-            <input
-              type="text"
-              name="title"
-              value={post.title}
-              onChange={handleChange}
-              placeholder="Nhập tiêu đề hấp dẫn và thu hút người đọc..."
-              className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              required
-            />
-          </div>
-
-          {/* Chủ dề */}
-          <div>
-            <label className="block font-medium mb-1">Chủ đề</label>
-            <div className="grid grid-cols-4 gap-2">
-              {topics.map((topic) => (
-                <label
-                  key={topic}
-                  className="flex items-center space-x-2 border rounded-lg p-2 hover:bg-gray-50"
-                >
-                  <input
-                    type="checkbox"
-                    value={topic}
-                    checked={post.topic.includes(topic)}
-                    onChange={handleTopicChange}
-                    className="w-4 h-4 accent-purple-500"
-                  />
-                  <span>{topic}</span>
+            <div className="p-6 space-y-4">
+              {/* Tiêu đề */}
+              <div>
+                <label className="block font-medium mb-1">
+                  Tiêu đề bài viết *
                 </label>
-              ))}
-            </div>
-
-            {/* ✅ Nếu chọn “Khác” thì hiện ô nhập */}
-            {post.topic.includes("Khác") && (
-              <div className="mt-3">
                 <input
                   type="text"
-                  value={customTopic}
-                  onChange={(e) => setCustomTopic(e.target.value)}
-                  placeholder="Nhập chủ đề khác..."
+                  name="title"
+                  value={post.title}
+                  onChange={handleChange}
+                  placeholder="Nhập tiêu đề hấp dẫn và thu hút người đọc..."
+                  className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  required
+                />
+              </div>
+
+              {/* Chủ dề */}
+              <div>
+                <label className="block font-medium mb-1">Chủ đề</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {topics.map((topic) => (
+                    <label
+                      key={topic}
+                      className="flex items-center space-x-2 border rounded-lg p-2 hover:bg-gray-50"
+                    >
+                      <input
+                        type="checkbox"
+                        value={topic}
+                        checked={post.topic.includes(topic)}
+                        onChange={handleTopicChange}
+                        className="w-4 h-4 accent-purple-500"
+                      />
+                      <span>{topic}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {/* ✅ Nếu chọn “Khác” thì hiện ô nhập */}
+                {post.topic.includes("Khác") && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      value={customTopic}
+                      onChange={(e) => setCustomTopic(e.target.value)}
+                      placeholder="Nhập chủ đề khác..."
+                      className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* URL hình ảnh */}
+              <div>
+                <label className="block font-medium mb-1">
+                  URL hình ảnh đại diện
+                </label>
+                <input
+                  type="text"
+                  name="mediaUrls"
+                  // value={post.mediaUrls}
+                  // onChange={handleChange}
+                  placeholder="https://example.com/image.jpg"
                   className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
               </div>
-            )}
-          </div>
 
-          {/* URL hình ảnh */}
-          <div>
-            <label className="block font-medium mb-1">
-              URL hình ảnh đại diện
-            </label>
-            <input
-              type="text"
-              name="mediaUrls"
-              // value={post.mediaUrls}
-              // onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-          </div>
+              {/* Nội dung */}
+              <div>
+                <label className="block font-medium mb-1">
+                  Nội dung bài viết *
+                </label>
+                <textarea
+                  name="content"
+                  value={post.content}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
+                  rows="6"
+                  required
+                ></textarea>
+              </div>
 
-          {/* Nội dung */}
-          <div>
-            <label className="block font-medium mb-1">
-              Nội dung bài viết *
-            </label>
-            <textarea
-              name="content"
-              value={post.content}
-              onChange={handleChange}
-              className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
-              rows="6"
-              required
-            ></textarea>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex justify-end space-x-3 pt-3">
-            <button
-              type="button"
-              className="px-5 py-2 border rounded-lg hover:bg-gray-100 transition"
-            >
-              Hủy bỏ
-            </button>
-            <button
-              onClick={handleSubmit}
-              className="px-5 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
-            >
-              {post.id ? "Cập nhật bài viết" : "Đăng bài viết"}
-            </button>
+              {/* Buttons */}
+              <div className="flex justify-end space-x-3 pt-3">
+                <button
+                  type="button"
+                  className="px-5 py-2 border rounded-lg hover:bg-gray-100 transition"
+                  onClick={()=>onClose()}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="px-5 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
+                >
+                  {post.id ? "Cập nhật bài viết" : "Đăng bài viết"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -345,8 +348,8 @@ export default function CreatePost({ initialPost }) {
   );
 }
 
-CreatePost.propTypes = {
+PostForm.propTypes = {
   initialPost: PropTypes.object,
-  // onClose: PropTypes.func,
-  // onSuccess: PropTypes.func,
+  onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
 };

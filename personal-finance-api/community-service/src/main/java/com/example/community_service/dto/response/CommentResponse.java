@@ -22,5 +22,5 @@ public class CommentResponse {
     private List<String> likes = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<CommentResponse> children;
+    private List<CommentResponse> children=new ArrayList<>();
 }

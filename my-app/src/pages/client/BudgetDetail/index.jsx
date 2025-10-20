@@ -79,15 +79,15 @@ function BudgetDetail() {
   const progressColor =
     budget.totalSpent >= budget.amountLimit ? "bg-red-500" : "bg-purple-500";
   return (
-    <div className="p-6 bg-gray-100">
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+    <div className=" bg-gray-100">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 min-h-screen">
         <div className="  ">
           <div className="rounded-lg bg-white">
             <div className=" items-center justify-between">
               {/* Thanh điều hướng */}
               <div className="flex justify-between  space-x-1">
                 <Link
-                  to="/budget"
+                  to="/finance/budget"
                   className="text-gray-600 hover:text-purple-600 space-x-4 flex items-center"
                 >
                   <MoveLeft className="text-gray-400" /> Back to Budgets

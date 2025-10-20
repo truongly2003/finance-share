@@ -10,4 +10,6 @@ import java.util.List;
 public interface NotificationRepository extends MongoRepository<Notification, String> {
     void deleteById(String notificationId);
     List<Notification> findAllNotificationByUserIdOrderByCreatedAtDesc(String userId);
+    void deleteByUserId(String userId);
+    Notification findByUserIdAndLinkAndType(String userId,String link, String type);
 }

@@ -1,16 +1,14 @@
 import { useState } from "react";
 import WalletPage from "../WalletPage";
-import Profile from "../Profile";
+
 import Catalog from "../Catalog";
 
 function Setting() {
-  const [activeTab, setActiveTab] = useState("Account");
-  const tabs = ["Account", "Wallet", "Categories"];
+  const [activeTab, setActiveTab] = useState("Wallet");
+  const tabs = [ "Wallet", "Categories"];
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "Account":
-        return <Profile />;
       case "Wallet":
         return <WalletPage />;
       case "Categories":
@@ -21,7 +19,7 @@ function Setting() {
   };
 
   return (
-    <div className="p-6 bg-gray-100">
+    <div className=" bg-gray-100">
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <div className="bg-white min-h-screen">
           {/* Header with Avatar, Name, Email */}

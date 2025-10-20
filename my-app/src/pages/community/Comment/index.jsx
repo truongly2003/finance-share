@@ -7,7 +7,13 @@ import SockJS from "sockjs-client";
 import PropTypes from "prop-types";
 import ChatInput from "./ChatInput";
 import { formatTime } from "@/utils/timeUtils";
+import useAuth from "@/context/useAuth";
+import { postApi } from "@/services/community/PostService";
+import ModalLikes from "../Post/Likes/ModalLikes";
+import useNotification from "@/context/useNotification";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
+// từng cái comment
 const CommentItem = ({
   userName,
   time,
@@ -15,7 +21,8 @@ const CommentItem = ({
   childrenComment = [],
   postId,
   commentId,
-
+  commentUserId,
+  likes,
   // active comment
   activeCommentId,
   setActiveCommentId,
@@ -24,6 +31,42 @@ const CommentItem = ({
   const timeFromNow = formatTime(time);
   const initial = userName[0]?.toUpperCase() || "";
   const isChatVisiable = activeCommentId === commentId;
+
+  const [showMenu, setShowMenu] = useState(false);
+  const { userId } = useAuth();
+  const [localLikes, setLocalLikes] = useState(likes || []);
+  const [showLikesModal, setShowLikesModal] = useState(false);
+
+  // like comment
+  const handleLike = async (a_commentId, b_userId) => {
+    try {
+      await postApi.likeComment(a_commentId, b_userId);
+      setLocalLikes((prev) => {
+        if (prev.includes(b_userId)) {
+          return prev.filter((id) => id !== b_userId);
+        } else {
+          return [...prev, b_userId];
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // xóa comment
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const { notify } = useNotification();
+  const handleDeleteComment = async () => {
+    let res;
+    try {
+      res = await commentApi.deleteComment(selectedComment);
+      setOpenConfirm(false);
+    } catch (error) {
+      console.log(error);
+    }
+    notify(res.message, "success");
+    setShowMenu(false)
+  };
   return (
     <div className="mt-3">
       <div className="flex items-start space-x-2">
@@ -31,27 +74,87 @@ const CommentItem = ({
           {initial}
         </div>
 
-        <div className="flex-1">
-          <div className="bg-gray-100 rounded-2xl px-3 py-2 inline-block">
-            <span className="block text-sm font-semibold text-blue-600">
-              {userName}
-            </span>
-            <span className="text-sm text-gray-800">{content}</span>
-          </div>
+        <div className="">
+          <div className="bg-gray-100 rounded-2xl px-3 py-2 flex justify-between">
+            <div>
+              <span className="block text-sm font-semibold text-blue-600">
+                {userName}
+              </span>
+              <span className="text-sm text-gray-800">{content}</span>
+            </div>
+            {/* start menu comment delete, edit */}
+            <div>
+              {commentUserId === userId && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowMenu((prev) => !prev)}
+                    className="p-1 text-gray-500 hover:text-gray-700"
+                  >
+                    ...
+                  </button>
 
+                  {showMenu && (
+                    <div className="absolute right-0 mt-1 bg-white border rounded-md shadow-md z-50 w-28">
+                      <button
+                        className="w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100"
+                        onClick={() => {
+                          alert("Chỉnh sửa:", commentId);
+                          // TODO: Gọi hàm mở chế độ chỉnh sửa
+                        }}
+                      >
+                        Chỉnh sửa
+                      </button>
+                      <button
+                        className="w-full text-left px-3 py-1.5 text-sm text-red-600 hover:bg-gray-100"
+                        onClick={() => {
+                          // alert("Xóa:", commentId);
+                          // TODO: Gọi API xóa comment
+                          setSelectedComment(commentId);
+                          setOpenConfirm(true);
+                        }}
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            {/* end menu comment delete, edit */}
+          </div>
+          {/* start reply */}
           <div className="flex items-center space-x-3 text-xs text-gray-500 mt-1 ml-1">
             <span>{timeFromNow}</span>
-            <button className="hover:underline">Thích</button>
+            <div className=" space-x-2">
+              <div className="cursor-pointer flex items-center gap-x-2">
+                <span
+                  onClick={() => handleLike(commentId, userId)}
+                  className={`${
+                    localLikes.includes(userId)
+                      ? "text-red-700 fill-red-700"
+                      : ""
+                  }`}
+                >
+                  Thích
+                </span>
+                <span onClick={() => setShowLikesModal(true)}>
+                  {localLikes?.length > 0 ? localLikes.length : 0}
+                </span>
+              </div>
+            </div>
             <button
               className="hover:underline"
-              onClick={() =>
-                setActiveCommentId(isChatVisiable ? null : commentId)
-              }
+              onClick={() => {
+                setActiveCommentId(isChatVisiable ? null : commentId);
+                setShowChildren(true);
+              }}
             >
               Phản hồi
             </button>
           </div>
+          {/* end reply */}
 
+          {/* show chat */}
           {isChatVisiable && (
             <div className="ml-10 mt-2">
               <ChatInput postId={postId} commentId={commentId} />
@@ -78,6 +181,10 @@ const CommentItem = ({
                       childrenComment={child.children}
                       postId={postId}
                       commentId={child.id}
+                      activeCommentId={activeCommentId}
+                      setActiveCommentId={setActiveCommentId}
+
+                      commentUserId={child.userId}
                     />
                   ))}
                   <button
@@ -92,10 +199,29 @@ const CommentItem = ({
           )}
         </div>
       </div>
+
+      {showLikesModal && (
+        <ModalLikes
+          id={commentId}
+          type="comment"
+          show={showLikesModal}
+          onClose={() => setShowLikesModal(false)}
+        />
+      )}
+
+      <ConfirmDeleteModal
+        isOpen={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleDeleteComment}
+        title="Xác nhận xóa bình luận"
+        description={`Bạn có chắc muốn xóa bình luận này không?`}
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+      />
     </div>
   );
 };
-
+//  giao diện comment
 function Comment({ postId, onClose }) {
   const [comments, setComments] = useState([]);
   const [stompClient, setStompClient] = useState(null);
@@ -115,7 +241,28 @@ function Comment({ postId, onClose }) {
     connectWebSocket();
     return () => disconnectWebSocket();
   }, [postId]);
+  //  hàm đệ quy hiện comment
+  const addReplyRecursive = (comments, newComment) => {
+    return comments.map((comment) => {
+      if (comment.id === newComment.parentCommentId) {
+        return {
+          ...comment,
+          children: [
+            newComment,
+            ...(comment.children || []).filter((c) => c.id !== newComment.id),
+          ],
+        };
+      }
+      if (comment.children && comment.children.length > 0) {
+        return {
+          ...comment,
+          children: addReplyRecursive(comment.children, newComment),
+        };
+      }
 
+      return comment;
+    });
+  };
   const connectWebSocket = () => {
     const socket = new SockJS("http://localhost:8082/community-service/ws");
     const client = new Client({
@@ -131,19 +278,7 @@ function Comment({ postId, onClose }) {
           setComments((prev) => {
             newComment.children = newComment.children || [];
             if (newComment.parentCommentId) {
-              return prev.map((comment) =>
-                comment.id === newComment.parentCommentId
-                  ? {
-                      ...comment,
-                      children: [
-                        newComment,
-                        ...comment.children.filter(
-                          (c) => c.id !== newComment.id
-                        ),
-                      ],
-                    }
-                  : comment
-              );
+              return addReplyRecursive(prev, newComment);
             }
             return [newComment, ...prev.filter((c) => c.id !== newComment.id)];
           });
@@ -165,12 +300,10 @@ function Comment({ postId, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-     
       <div
         className="absolute inset-0 bg-black bg-opacity-40"
         onClick={onClose}
       />
-
       <div
         className="relative bg-white h-full w-full sm:w-[450px] md:w-[40%] shadow-2xl transform translate-x-0 animate-slide-left flex flex-col"
         style={{ animation: "slideLeft 0.3s ease-out" }}
@@ -198,9 +331,11 @@ function Comment({ postId, onClose }) {
                 userName={item.userName}
                 time={item.createdAt}
                 content={item.content}
+                likes={item.likes}
                 commentId={item.id}
                 childrenComment={item.children}
                 postId={postId}
+                commentUserId={item.userId}
                 activeCommentId={activeCommentId}
                 setActiveCommentId={setActiveCommentId}
               />

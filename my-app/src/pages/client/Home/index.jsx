@@ -127,7 +127,7 @@ const Home = () => {
       <section className="max-w-6xl mx-auto p-5 py-12">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl text-purple-500 md:text-4xl font-bold mt-2">
+            <h2 className="text-3xl md:text-4xl text-purple-500  font-bold mt-2">
             Khám phá và giải pháp
             </h2>
           </div>

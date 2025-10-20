@@ -229,7 +229,7 @@ const Overview = () => {
   const { incomeExpenseData, categoryData, filteredTotals } = getChartData();
 
   return (
-    <div className="p-6 bg-gray-100">
+    <div className=" bg-gray-100">
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-purple-600">Overview</h2>

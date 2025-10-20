@@ -21,18 +21,17 @@ import CheckEmail from "@/pages/client/Authentication/CheckEmail";
 import VerifyEmail from "@/pages/client/Authentication/VerifyEmail";
 import ForgotPassword from "@/pages/client/Password/ForgotPassword";
 import ResetPassword from "@/pages/client/Password/ResetPassword";
-// import Groups from "@/pages/client/Groups";
-import GroupDetail from "@/pages/client/GroupDetail";
 import Setting from "@/pages/client/Setting";
-import { GroupProvider } from "@/context/GroupContext";
 import CommunityLayout from "@/layouts/CommunityLayout";
 import HomeCommunity from "@/pages/community/Post";
-import CommentSection from "@/pages/community/Comment/CommentSection";
 import MyPost from "@/pages/community/MyPost";
 import DetailPost from "@/pages/community/Post/DetailPost";
-import CreatePost from "@/pages/community/Post/CreatePost";
+import CreatePost from "@/pages/community/PostForm";
+import Profile from "@/pages/client/Profile";
+import AboutPage from "@/pages/About/AboutPage";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
+    { path: routes.AboutUs, component: AboutPage, layout: DefaultLayout },
   {
     path: routes.Transaction,
     component: Transaction,
@@ -55,28 +54,25 @@ export const publicRoutes = [
     component: () => <AuthCallback provider="facebook" />,
     layout: null,
   },
-  { path: routes.HomeCommunity, component: HomeCommunity, layout: CommunityLayout },
-  { path: routes.test, component: CommentSection, layout: null },
+  {
+    path: routes.HomeCommunity,
+    component: HomeCommunity,
+    layout: CommunityLayout,
+  },
 
-  { path: routes.DetailPost, component: DetailPost, layout: CommunityLayout },
-  
+  { path: routes.DetailPost, component: DetailPost, layout: DefaultLayout },
+
   { path: routes.CreatePost, component: CreatePost, layout: CommunityLayout },
   { path: routes.MyPost, component: MyPost, layout: CommunityLayout },
+
+  // profile
+   { path: routes.Profile, component: Profile, layout: DefaultLayout },
 ];
 export const privateRoutes = [
   { path: routes.Overview, component: Overview, layout: TransactionLayout },
   { path: routes.Setting, component: Setting, layout: TransactionLayout },
-  {
-    path: routes.GroupDetail,
-    component: () => (
-      <GroupProvider>
-        <GroupDetail />
-      </GroupProvider>
-    ),
-    layout: TransactionLayout,
-  },
+
   { path: routes.Budget, component: Budget, layout: TransactionLayout },
-  // { path: routes.Groups, component: Groups, layout: TransactionLayout },
   {
     path: routes.BudgetDetail,
     component: BudgetDetail,

@@ -1,0 +1,34 @@
+📋 Tóm tắt Kiến Trúc
+Notification-Service gồm các thành phần chính:
+
+Controller: Nhận request từ client
+Service: Xử lý logic, validate dữ liệu, lưu database
+Producer (Kafka): Gửi notification vào Kafka topic
+Consumer (Kafka): Lắng nghe Kafka topic để xử lý thực tế
+Email/SMS/Push Services: Gửi notification qua các channel khác nhau
+Repository: Tương tác với database
+Exception Handler: Xử lý lỗi và retry logic
+
+🔄 Quy Trình Hoạt Động
+
+Client gửi request → NotificationController
+Validate & lưu DB với status PENDING
+Producer gửi vào Kafka → response ngay cho client (non-blocking)
+Consumer nhận từ Kafka → xử lý bất đồng bộ
+Gửi notification qua Email/SMS/Push
+Nếu thất bại: Retry tối đa 3 lần, sau đó đánh dấu FAILED
+Cập nhật Database với status cuối cùng
+
+
+
+i have service code with architecture microservice 
+1: user-servive:  
+2: community-service:  
+3: finnace-service:  
+4: notification-service:(bình luận mới về bài viết của mình, trả lời comment, like bài, thông báo khi có giao dịch mới) are doing have controller, repository, service i want to do more : spring kafka, notification real-time help me build 
+architecture project notification-service standard
+draw a flowchart of activitis
+reply me is vietnamese
+
+
+//        messagingTemplate.convertAndSend("/topic/comments/" + commentRequest.getPostId(), commentResponse);

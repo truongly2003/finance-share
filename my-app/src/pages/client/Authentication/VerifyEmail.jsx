@@ -23,7 +23,7 @@ function VerifyEmail() {
     setMessage("Confirming email...");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/email/verify-email?token=${token}`
+        `http://localhost:8888/user-service/api/email/verify-email?token=${token}`
       );
       setIsProcessing(true);
       if (response.data.status === true) {

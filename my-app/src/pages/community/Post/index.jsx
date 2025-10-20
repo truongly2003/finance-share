@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "@/features/post/postSlice";
-import PostForm from "@/pages/community/Post/CreatePost";
-
+import { Plus } from "lucide-react";
 import BlogCard from "./BlogCard";
 import LoadingSpinner from "@/components/Loading";
+import PostForm from "@/pages/community/PostForm";
+import SearchPost from "./SearchPost";
 
 function Post() {
   const [showFormPost, setShowFormPost] = useState(false);
   const [loadingIsFilter, setLoadingIsFilter] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("Tất cả");
   const { posts, loading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getPosts());
   }, [dispatch]);
@@ -25,14 +26,9 @@ function Post() {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [searchTerm, selectedTopic]);
+  }, [selectedTopic]);
 
   const filterPost = posts.filter((post) => {
-    const matchesSearch =
-      post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.userName?.toLowerCase().includes(searchTerm.toLowerCase());
-
     let matchesTopic = true;
     const financialTopics = [
       "tiết kiệm",
@@ -58,7 +54,7 @@ function Post() {
       }
     }
 
-    return matchesSearch && matchesTopic;
+    return matchesTopic;
   });
 
   const topic = [
@@ -72,32 +68,53 @@ function Post() {
   ];
 
   return (
-    <div className="  bg-gray-100 ">
-      {/* Posts Section */}
-      <div className=" p-4 space-y-6 mb-4 ">
-        <h2 className="text-3xl font-bold text-center mb-6">
-          Khám phá kiến thức
-        </h2>
-        <p className="text-center text-gray-500 mb-6">
-          Nơi chia sẻ những bài viết chất lượng cao về tài chính, đầu tư và quản
-          lý doanh nghiệp.
-        </p>
-        <div className="flex justify-center mb-6">
-          <input
-            type="text"
-            placeholder="Tìm kiếm bài viết..."
-            className="w-1/3 p-2 rounded-full border border-gray-300 focus:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <div className="">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-purple-500 mb-3">
+              Finance Hub: Share. Learn. Grow.
+            </h2>
+            <p className="text-gray-600 text-base max-w-2xl mx-auto">
+              A community for sharing valuable insights on finance, investment, and business management.
+            </p>
+          </div>
+
+          {/* Search and Create Post */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <div className="w-full sm:flex-1 max-w-2xl">
+              <SearchPost />
+            </div>
+            <button
+              onClick={() => setShowFormPost(true)}
+              className="flex items-center gap-2 px-6 py-3  bg-purple-500 text-white rounded-xl hover:bg-purple-700  shadow-lg hover:shadow-xl transition-all duration-300 font-semibold whitespace-nowrap transform hover:scale-105 hover:-translate-y-0.5"
+            >
+              <Plus size={20} strokeWidth={2.5} />
+              Đăng bài mới
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Topic Filter */}
+        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 mb-8 backdrop-blur-sm bg-opacity-80">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-1 h-6 bg-gradient-to-b from-purple-600 to-purple-200 rounded-full"></div>
+            <h3 className="text-base font-bold text-gray-800 uppercase tracking-wide">
+              Chủ đề
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-3">
             {topic.map((item, index) => (
               <button
                 key={index}
-                className={`p-2 px-4 rounded-full mx-1 transition ${
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                   selectedTopic === item
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "bg-purple-600  text-white shadow-lg shadow-purple-500/30 transform scale-105"
+                    : " from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 hover:shadow-md border border-gray-200"
                 }`}
                 onClick={() => setSelectedTopic(item)}
               >
@@ -106,15 +123,37 @@ function Post() {
             ))}
           </div>
         </div>
-      </div>
-      {loading || loadingIsFilter ? (
-        <div className="flex justify-center py-10">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        <BlogCard filterPost={filterPost} />
-      )}
 
+        {/* Posts Grid */}
+        {loading || loadingIsFilter ? (
+          <div className="flex justify-center items-center py-32">
+            <LoadingSpinner />
+          </div>
+        ) : filterPost.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-16 text-center backdrop-blur-sm bg-opacity-80">
+            <div className="text-8xl mb-6 animate-bounce">📭</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+              Chưa có bài viết nào
+            </h3>
+            <p className="text-gray-500 text-lg mb-6">
+              Hãy là người đầu tiên chia sẻ trong chủ đề này!
+            </p>
+            <button
+              onClick={() => setShowFormPost(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold transform hover:scale-105"
+            >
+              <Plus size={20} strokeWidth={2.5} />
+              Tạo bài viết đầu tiên
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <BlogCard filterPost={filterPost} />
+          </div>
+        )}
+      </div>
+
+      {/* Post Form Modal */}
       {showFormPost && (
         <PostForm
           onClose={() => {

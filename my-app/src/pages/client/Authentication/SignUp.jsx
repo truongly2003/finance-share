@@ -51,7 +51,7 @@ function SignUp() {
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white border p-6 rounded-lg shadow-md">
-        <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
+        <h2 className="text-center text-2xl font-semibold mb-4">Đăng ký</h2>
 
         <div className="">
           <div className="mb-3">
@@ -111,13 +111,13 @@ function SignUp() {
             onClick={handleSubmit}
           
           >
-            Sign Up
+            Đăng ký
           </button>
         </div>
 
         <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300" />
-          <span className="px-3 text-gray-800">Or Login with</span>
+          <span className="px-3 text-gray-800">Hoặc đăng nhập với</span>
           <hr className="flex-grow border-gray-300" />
         </div>
 
@@ -138,9 +138,9 @@ function SignUp() {
 
         <div className="text-center mt-4">
           <span className="text-sm">
-            You already have a account?{" "}
+            Bạn đã có tài khoản?{" "}
             <Link to="/login" className="text-gray-500 hover:underline">
-              Login now
+              Đăng nhập ngay
             </Link>
           </span>
         </div>

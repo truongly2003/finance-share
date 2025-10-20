@@ -50,14 +50,14 @@ export default function GoalDetail() {
 
   return (
     <div className=" ">
-      <div className="p-6 bg-gray-100">
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+      <div className=" bg-gray-100">
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 min-h-screen">
           <div className="rounded-lg bg-white">
          
               {/* Thanh điều hướng */}
               <div className="flex  space-x-1 justify-between">
                 <Link
-                  to="/goal"
+                  to="/finance/goal"
                   className="text-gray-600 hover:text-purple-600 space-x-4 flex items-center"
                 >
                   <MoveLeft className="text-gray-400" /> Back to goals

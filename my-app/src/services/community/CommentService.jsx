@@ -23,8 +23,18 @@ const commentApi = {
       throw error;
     }
   },
-
-    getAllCommentChildren: async (commentId) => {
+  deleteComment: async (commentId) => {
+    try {
+      const response = await httpRequest.delete(
+        `community-service/comments?commentId=${commentId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("error post:", error);
+      throw error;
+    }
+  },
+  getAllCommentChildren: async (commentId) => {
     try {
       const response = await httpRequest.get(
         `community-service/comments/children?commentId=${commentId}`

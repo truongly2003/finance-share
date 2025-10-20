@@ -81,7 +81,7 @@ export default function TransactionForm({
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 ">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-[1200px] relative border border-purple-600">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[800px] relative border border-purple-600">
         <div className="grid grid-cols-6 gap-4 mt-3 ">
           {/* Ngày */}
           <div className="col-span-1">

@@ -12,25 +12,25 @@ function DeleteAccountModal({ isOpen, onClose, onConfirm }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
         <h2 className="text-xl font-bold text-gray-800 mb-4">
-        Confirm account deletion
+          Confirm account deletion
         </h2>
         <p className="text-gray-400 mb-4">
-        Are you sure you want to delete your account? If you do,
-         all of your data (including personal information, activity history, etc.)
-         will be lost and cannot be recovered.
+          Are you sure you want to delete your account? If you do, all of your
+          data (including personal information, activity history, etc.) will be
+          lost and cannot be recovered.
         </p>
         <div className="flex justify-end gap-4">
           <button
             className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition"
             onClick={onClose}
           >
-           Cancel
+            Cancel
           </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
             onClick={onConfirm}
           >
-          Delete account
+            Delete account
           </button>
         </div>
       </div>
@@ -100,94 +100,111 @@ function Profile() {
   };
 
   return (
-    <div className="">
-      <div className=" ">
-        <div>
-          <label className="block text-sm  text-gray-400 mb-1">
-            {" "}
-            Name
-          </label>
-          <input
-            type="text"
-            name="userName"
-            value={user.userName}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
-          />
+    <div className=" ">
+      <div className="bg-white rounded-2xl  p-8">
+        <div className=" flex justify-center items-center mb-4  ">
+          <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center border border-purple-600 text-gray-500 mr-4">
+            120 x 120
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-purple-800">Ly Truong</h2>
+            <p className="text-gray-600">ly.truong@email.com</p>
+          </div>
         </div>
-        <div className="mt-2">
-          <label className="block text-sm  text-gray-400 mb-1">
-            Email Address
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
-          />
-        </div>
-        <div className="mt-2">
-          <label className="block text-sm  text-gray-400 mb-1">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={user.phoneNumber}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
-          />
-        </div>
-        <div className="mt-2">
-          <label className="block text-sm  text-gray-400 mb-1">
-            Create at
-          </label>
-          <input
-            type="tel"
-            value={new Date(user.createdAt).toLocaleDateString("vi-VN")}
-            disabled
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
-          />
+        <div className="border-b mb-6"></div>
+        <di className="mt-4">
+          <h1 className="text-black text-xl">Thông tin cá nhân</h1>
+        </di>
+        <div className="space-y-5 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Họ và tên
+            </label>
+            <input
+              type="text"
+              name="userName"
+              value={user.userName}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Số điện thoại
+            </label>
+            <input
+              type="tel"
+              name="phoneNumber"
+              value={user.phoneNumber}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Ngày tạo
+            </label>
+            <input
+              type="tel"
+              value={new Date(user.createdAt).toLocaleDateString("vi-VN")}
+              disabled
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Ngôn ngữ
+            </label>
+            <select
+              name="language"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all cursor-pointer"
+            >
+              <option value="English">English</option>
+              <option value="Vietnamese">Tiếng việt</option>
+            </select>
+          </div>
         </div>
 
-        <div className="mt-2">
-          <label className="block text-sm  text-gray-400 mb-1">
-            Language
-          </label>
-          <select
-            name="language"
-            // value={user.language}
-            // onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-600"
-          >
-            <option value="English">English</option>
-            <option value="Vietnamese">Vietnamese</option>
-          </select>
-        </div>
-
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-between">
-          <div className="flex gap-4">
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row gap-3 justify-between">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                className="bg-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                onClick={handleSubmit}
+              >
+                Lưu thay đổi
+              </button>
+              <button
+                className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-all"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Thay đổi mật khẩu
+              </button>
+            </div>
             <button
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-              onClick={handleSubmit}
+              className="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-medium hover:bg-red-100 transition-all border border-red-200"
+              onClick={() => setIsDeleteModalOpen(true)}
             >
-              Save Change
-            </button>
-            <button
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Change PassWord
+              Xóa tài khoản
             </button>
           </div>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
-            onClick={() => setIsDeleteModalOpen(true)}
-          >
-            Delete Account
-          </button>
         </div>
       </div>
 

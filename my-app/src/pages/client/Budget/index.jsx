@@ -47,8 +47,8 @@ export default function Budget() {
     return diffDays;
   };
   return (
-    <div className="p-6 bg-gray-100">
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+    <div className=" bg-gray-100">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 min-h-screen">
         <div className=" ">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-purple-600">Budgets</h2>
@@ -103,7 +103,7 @@ export default function Budget() {
                     <Link
                       key={index}
                       className="bg-white shadow-md rounded-lg p-4 cursor-pointer border hover:border-purple-300"
-                      to={`/budget/budget-detail/${budget.id}`}
+                      to={`/finance/budget/budget-detail/${budget.id}`}
                     >
                       <div className="space-y-2">
                         <div className="flex items-center mb-4">

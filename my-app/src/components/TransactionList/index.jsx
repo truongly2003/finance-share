@@ -9,27 +9,33 @@ const TransactionList = ({
     <div className="mt-6">
       <div className="space-y-2 h-vh">
         <h3 className="text-lg font-semibold text-purple-500 mb-4 ">
-          Transaction list
+          Danh sách giao dịch
         </h3>
         {Object.keys(transactionsToRender).length === 0 ? (
           <div className="text-center py-8 bg-gray-50 rounded-xl mt-4">
-            <p className="text-gray-500">No transactions yet</p>
+            <p className="text-gray-500">Không có giao dịch</p>
           </div>
         ) : (
           Object.entries(transactionsToRender).map(([date, data], index) => (
             <div key={index} className="mb-6 bg-white rounded-lg">
               <div className="flex justify-between items-center p-2 border-b mb-4 border-gray-300">
-                <p className="text-gray-600 font-bold">{date}</p>
-                <div className="text-sm text-gray-500 flex gap-4">
-                  <span className="font-bold text-red-500">
-                    Expense: - {data.totalExpense.toLocaleString()} đ
+                <p className="text-gray-700">{date}</p>
+                <div className="flex items-center justify-between gap-6 text-sm font-medium">
+                  <span className="text-red-600 bg-red-50 px-3 py-1 rounded-full shadow-sm">
+                     Chi tiêu:{" "}
+                    <span className="font-semibold">
+                      - {data.totalExpense.toLocaleString()} đ
+                    </span>
                   </span>
-                  <span className="font-bold text-purple-500">
-                    Income: + {data.totalIncome.toLocaleString()} đ
+                  <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full shadow-sm">
+                    Thu nhập:{" "}
+                    <span className="font-semibold">
+                      + {data.totalIncome.toLocaleString()} đ
+                    </span>
                   </span>
                 </div>
               </div>
-              
+
               {data.transactions.map((item, idx) => {
                 const iconData = ICONS[item.icon] || {
                   icon: "?",
@@ -38,7 +44,7 @@ const TransactionList = ({
                 return (
                   <div key={idx} className="">
                     <div
-                      className="p-2 mt-2 border rounded-lg  flex justify-between items-center cursor-pointer ml-2 mr-2  hover:bg-purple-200 hover:rounded-lg transition"
+                      className="p-2 mt-2 border rounded-lg  flex justify-between items-center cursor-pointer ml-2 mr-2  hover:bg-gray-200 hover:rounded-lg transition"
                       onClick={() => {
                         setShowFormTransaction(true);
                         setEditingTransaction(item);
@@ -46,7 +52,7 @@ const TransactionList = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`p-2 flex items-center justify-center ${iconData.color} rounded-full text-white`}
+                          className={`p-2 h-8 w-8 flex items-center justify-center ${iconData.color} rounded-full text-white`}
                         >
                           {iconData.icon}
                         </div>

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ChevronDown } from "lucide-react";
 import { getAllCategory } from "@/services/CategoryService";
-import ICONS from "../Icons";
 import useAuth from "@/context/useAuth";
 export default function CategoryDropdown({
   onSelectCategory,
@@ -20,10 +19,10 @@ export default function CategoryDropdown({
         const result = await getAllCategory(userId);
         if (result) {
           const expenseCategories = result.filter(
-            (cat) => cat.categoryType === "expense"
+            (cat) => cat.categoryType === "Expense"
           );
           const incomeCategories = result.filter(
-            (cat) => cat.categoryType === "income"
+            (cat) => cat.categoryType === "Income"
           );
           setCategories({
             expense: expenseCategories,
@@ -42,7 +41,7 @@ export default function CategoryDropdown({
     }
     fetchCategories();
   }, [initialCategoryId, userId]);
- 
+
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelectType = (type) => {
@@ -100,30 +99,26 @@ export default function CategoryDropdown({
           {/* Danh sách danh mục */}
           <div className="max-h-60 overflow-y-auto">
             {categories[selectedType].map((category) => {
-              const iconData = ICONS[category.icon] || {
-                icon: "?",
-                color: "bg-gray-400",
-              };
               return (
                 <div key={category.id} className="">
-                 
-                  <div className=" mt-4">
-                  <div
-                    className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleSelectCategory(category)}
-                  >
-                    <span className="mr-2">{iconData.icon}</span>{" "}
-                    {category.categoryName}
-                    {/* Hiển thị ngân sách nếu có */}
-                  </div>
-                  <div>
-                    {category.budgetLimit  && category.budgetRemaining
-                    
-                    && (
-                      <span className="px-4">Bạn có thể chi tiêu: {category.budgetRemaining.toLocaleString("vi-VN")} đ</span>
-                    )
-                    }
-                  </div>
+                  <div className=" mt-4  mb-4 ">
+                    <div className="border hover:bg-gray-300 cursor-pointer ml-2 mr-2">
+                      <div
+                        className="flex items-center px-4 py-2 "
+                        onClick={() => handleSelectCategory(category)}
+                      >
+                        {category.categoryName}
+                        {/* Hiển thị ngân sách nếu có */}
+                      </div>
+                      <div>
+                        {category.budgetLimit && category.budgetRemaining && (
+                          <span className="px-4">
+                            Bạn có thể chi tiêu:{" "}
+                            {category.budgetRemaining.toLocaleString("vi-VN")} đ
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );

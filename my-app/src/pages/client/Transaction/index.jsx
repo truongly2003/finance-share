@@ -53,7 +53,7 @@ function Transaction() {
     fetchTransactions();
   }, [fetchTransactions]);
 
-  const listCategories = transaction.map((item) => item.categoryName);
+  
   // console.log(transaction)
   const groupedTransactions = transaction.reduce((acc, item) => {
     let dateKey;
@@ -112,11 +112,11 @@ function Transaction() {
   const transactionsToRender =
     searchItem.trim() !== "" ? searchTransactions : groupedTransactions;
   return (
-    <div className="p-6 bg-gray-100">
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+    <div className=" bg-gray-100">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 min-h-screen">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-purple-600">
-            Transactions
+            Transaction
           </h2>
           <button
             className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
@@ -125,14 +125,14 @@ function Transaction() {
               setEditingTransaction(null);
             }}
           >
-            Create New Transaction
+            Create new transaction
           </button>
         </div>
         <div className="bg-white shadow-md rounded-lg  border  p-6">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Filter</h2>
           </div>
-          <div className="grid grid-cols-5 gap-4  ">
+          <div className="grid grid-cols-4 gap-4  ">
             {/* Loại */}
             <div className="col-span-1 ">
               <label className="text-sm text-gray-600">Type</label>
@@ -145,25 +145,11 @@ function Transaction() {
                 <option value="income">Income</option>
               </select>
             </div>
-            {/* Danh mục */}
-            <div className="col-span-1 ">
-              <label className="text-sm text-gray-600">Category</label>
-              <select
-                className=" border rounded p-2 w-full"
-                value={searchItem}
-                onChange={(e) => setSearchItem(e.target.value)}
-              >
-                {[...new Set(listCategories)].map((item, index) => (
-                  <option key={index} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
+      
 
             {/* day week month year */}
             <div className="col-span-1">
-              <label className="text-sm text-gray-600"> To time line</label>
+              <label className="text-sm text-gray-600">Over time</label>
               <select
                 className=" border rounded p-2 w-full"
                 value={filter}

@@ -1,17 +1,17 @@
 
 const routes={
     Home:"/",
-    Transaction: '/transaction',
-    Overview:'/overview',
-    Budget: '/budget',
-    BudgetDetail: '/budget/budget-detail/:id',
-    Goal: '/goal',
-    Groups: '/groups-group',
-    GoalDetail: '/goal/goal-detail/:id',
-    Catalog: '/catalog',
-    Report: '/report',
-    Option: '/option',
-    Debt: '/debt',
+    Transaction: '/finance',
+    Overview:'/finance/overview',
+    Budget: '/finance/budget',
+    BudgetDetail: '/finance/budget/budget-detail/:id',
+    Goal: '/finance/goal',
+   
+    GoalDetail: '/finance/goal/goal-detail/:id',
+    Catalog: '/finance/catalog',
+    Report: '/finance/report',
+    Option: '/finance/option',
+    Debt: '/finance/debt',
     Login: '/login',
     SignUp: "/signup",
     LoginPage: "/loginPage",
@@ -21,23 +21,26 @@ const routes={
     AuthCallBackGoogle: "/oauth2/callback/google",
     AuthCallBackFacebook: "/oauth2/callback/facebook",    
     // settings
-    Setting:'/Setting',
-    Profile:'/profile',
-    Wallet:'/wallet',
-    GroupDetail: '/group-detail-group/:id',
+    Setting:'/finance/Setting',
+    Wallet:'/finance/wallet',
     Checkemail:'/check-email',
     VerifyEmail:'/verify-email-token',
+
+    Profile:'/profile',
 
     ForgetPassword:'/forgot-password',
     ResetPassword:'/reset-password',
 
     // community
-    HomeCommunity:'/community',
-    DetailPost:'/community/detail-post/:id',
-    CreatePost: '/post/create',
-    MyPost: '/my-post',
+    HomeCommunity:'/community/post',
+    DetailPost:'/community/post/detail-post/:id',
+    CreatePost: '/community/post/create',
+    MyPost: '/community/post/my-post',
     Friend: 'friend',
-    test:'/test'
+    test:'/test',
+
+
+    AboutUs:'/about-us'
 }
 export default routes
 
