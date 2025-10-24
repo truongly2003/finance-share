@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +34,7 @@ public class WalletService implements IWalletService {
             defaultWallet.setBalance(BigDecimal.ZERO);
             defaultWallet.setWalletType("1");
             defaultWallet.setCurrency("VND");
+            defaultWallet.setCreatedAt(Instant.now());
             walletRepository.save(defaultWallet);
         }
 //        User user = userRepository.findById(userId)

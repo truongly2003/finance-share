@@ -15,7 +15,7 @@ import BudgetDetail from "@/pages/client/BudgetDetail";
 import GoalDetail from "@/pages/client/GoalDetail";
 
 import AuthCallback from "@/pages/client/Authentication/AuthCallback";
-import Home from "@/pages/client/Home";
+import Home from "@/pages/OtherPage/Home";
 import TransactionLayout from "@/layouts/TransactionLayout";
 import CheckEmail from "@/pages/client/Authentication/CheckEmail";
 import VerifyEmail from "@/pages/client/Authentication/VerifyEmail";
@@ -28,10 +28,10 @@ import MyPost from "@/pages/community/MyPost";
 import DetailPost from "@/pages/community/Post/DetailPost";
 import CreatePost from "@/pages/community/PostForm";
 import Profile from "@/pages/client/Profile";
-import AboutPage from "@/pages/About/AboutPage";
+import About from "@/pages/OtherPage/About";
 export const publicRoutes = [
   { path: routes.Home, component: Home, layout: DefaultLayout },
-    { path: routes.AboutUs, component: AboutPage, layout: DefaultLayout },
+    { path: routes.AboutUs, component: About, layout: DefaultLayout },
   {
     path: routes.Transaction,
     component: Transaction,

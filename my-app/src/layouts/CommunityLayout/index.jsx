@@ -12,11 +12,11 @@ function CommunityLayout({ children }) {
         </div>
       </header>
       <div className="flex pt-16 max-w-6xl mx-auto gap-6 px-4">
-        <aside className="w-64 bg-white  overflow-y-auto px-4 py-4 h-fit sticky top-20">
+        <aside className="w-64 bg-white  overflow-y-auto px-4 py-4 border border-gray-200  h-fit sticky top-20 rounded-lg">
           <Sidebar />
         </aside>
 
-        <main className="flex-1 px-4 py-4">{children}</main>
+        <main className="flex-1 py-4 ">{children}</main>
       </div>
       <Footer />
     </div>

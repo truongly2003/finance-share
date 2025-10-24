@@ -4,6 +4,7 @@ import com.example.notification_service.entity.Notification;
 import com.example.notification_service.repository.NotificationRepository;
 import com.example.notification_service.service.impl.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.example.common.dto.NotificationEventDto;
 import java.time.LocalDateTime;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaNotificationListener {
@@ -25,8 +27,6 @@ public class KafkaNotificationListener {
 
     @KafkaListener(topics = "notification_events", groupId = "notification-service-group")
     public void consume(NotificationEventDto event) {
-
-//            System.out.println("Kafka consumer got event: " + event);
         Notification existing = notificationRepository
                 .findByUserIdAndLinkAndType(
                         event.getUserId(),
@@ -57,5 +57,41 @@ public class KafkaNotificationListener {
 
     }
 
+    @KafkaListener(topics = "transaction_events", groupId = "notification-service-group")
+    public void consumeTransaction(NotificationEventDto event) {
+        if(event==null){
+            return;
+        }
+        Notification notification = new Notification();
+        notificationRepository.deleteByUserIdAndType(event.getUserId(),event.getType());
 
+        notification.setUserId(event.getUserId());
+        notification.setActorId(event.getActorId());
+        notification.setActorName(event.getActorName());
+        notification.setMessage(event.getMessage());
+        notification.setType(event.getType());
+        notification.setLink(event.getLink());
+        notification.setCreatedAt(LocalDateTime.now());
+        System.out.println("xin chào trưởng"+event.getMessage());
+        notificationRepository.save(notification);
+
+        messagingTemplate.convertAndSend("/topic/notifications/" + event.getUserId(), notification);
+    }
+    @KafkaListener(topics = "budget_events",groupId = "notification-service-group")
+    public void consumeBudget(NotificationEventDto event) {
+        if(event==null){
+            return;
+        }
+        System.out.println("xin chao trưởng"+event.getMessage());
+        Notification notification = new Notification();
+        notification.setUserId(event.getUserId());
+        notification.setActorId(event.getActorId());
+        notification.setActorName(event.getActorName());
+        notification.setMessage(event.getMessage());
+        notification.setType(event.getType());
+        notification.setLink(event.getLink());
+        notification.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + event.getUserId(), notification);
+    }
 }

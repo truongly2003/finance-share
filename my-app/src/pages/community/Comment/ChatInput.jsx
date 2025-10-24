@@ -97,13 +97,13 @@ const ChatInput = ({ postId, commentId }) => {
             onClick={handleCancel}
             className="w-24 py-2 rounded-full font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition"
           >
-            Hủy
+            Cancel
           </button>
           <button
             onClick={handleSubmit}
             className="w-24 py-2 rounded-full font-medium text-white bg-purple-500 hover:bg-purple-600 transition"
           >
-            Bình luận
+            Comment
           </button>
         </div>
       )}

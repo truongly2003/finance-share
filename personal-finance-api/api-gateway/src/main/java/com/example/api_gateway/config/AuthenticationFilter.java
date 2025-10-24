@@ -30,6 +30,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/community-service/comments",
             "/community-service",
             "/notification-service/notifications",
+
+
     };
     private final AuthenticateService authenticateService;
 

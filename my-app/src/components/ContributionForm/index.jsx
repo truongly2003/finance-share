@@ -19,6 +19,7 @@ const ContributionForm = ({ onClose, onSuccess, initialContribute }) => {
   const {userId}=useAuth()
   const { notify}=useNotification()
   const { id } = useParams();
+  const { walletId}=useWallet()
   const [contribute, setContribute] = useState(
     initialContribute || {
       goalId: id,
@@ -26,6 +27,7 @@ const ContributionForm = ({ onClose, onSuccess, initialContribute }) => {
       amount: "",
       contributionDate: new Date().toISOString().split("T")[0],
       description: "",
+      walletId:walletId,
     }
   );
   const handChangeContribute = (e) => {

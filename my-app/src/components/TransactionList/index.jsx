@@ -9,11 +9,11 @@ const TransactionList = ({
     <div className="mt-6">
       <div className="space-y-2 h-vh">
         <h3 className="text-lg font-semibold text-purple-500 mb-4 ">
-          Danh sách giao dịch
+          List transaction
         </h3>
         {Object.keys(transactionsToRender).length === 0 ? (
           <div className="text-center py-8 bg-gray-50 rounded-xl mt-4">
-            <p className="text-gray-500">Không có giao dịch</p>
+            <p className="text-gray-500">No transaction yet</p>
           </div>
         ) : (
           Object.entries(transactionsToRender).map(([date, data], index) => (

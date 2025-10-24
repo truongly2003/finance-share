@@ -16,4 +16,5 @@ public interface IUserService {
     boolean resetPassword(ResetPasswordRequest request);
     String getUserName(String userId);
     List<String> getListUserName();
+    List<String> getListUserId();
 }

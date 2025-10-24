@@ -12,7 +12,7 @@ import SockJS from "sockjs-client";
 const Header = () => {
   const { userId, userName } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isShowNotifications, setIsShowNotifications] = useState(true);
+  const [isShowNotifications, setIsShowNotifications] = useState(false);
   const stompClientRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
 
@@ -34,6 +34,7 @@ const Header = () => {
     client.onConnect = () => {
       client.subscribe(`/topic/notifications/${userId}`, (message) => {
         const newNotify = JSON.parse(message.body);
+        // console.log(newNotify)
         setNotifications((prev) => {
           // Tìm thông báo cùng link và cùng type (cùng loại hành động)
           const existsIndex = prev.findIndex(
@@ -82,8 +83,8 @@ const Header = () => {
     <header className="flex justify-between items-center  bg-white ml-8 mr-8 w-full ">
       <div className=" font-bold w-64">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">MoneyShare</h1>
-          <p className="text-xs text-gray-500">Quản lý & Chia sẻ</p>
+          <h1 className="text-xl font-bold text-gray-800 text-center">FinanceShare</h1>
+          <p className="text-xs text-gray-500 text-center">Manage & Share</p>
         </div>
       </div>
       <div className="space-x-8">
@@ -220,3 +221,6 @@ const Header = () => {
 };
 
 export default Header;
+
+
+

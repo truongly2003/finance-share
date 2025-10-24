@@ -65,7 +65,7 @@ const CommentItem = ({
       console.log(error);
     }
     notify(res.message, "success");
-    setShowMenu(false)
+    setShowMenu(false);
   };
   return (
     <div className="mt-3">
@@ -183,7 +183,6 @@ const CommentItem = ({
                       commentId={child.id}
                       activeCommentId={activeCommentId}
                       setActiveCommentId={setActiveCommentId}
-
                       commentUserId={child.userId}
                     />
                   ))}
@@ -264,7 +263,7 @@ function Comment({ postId, onClose }) {
     });
   };
   const connectWebSocket = () => {
-    const socket = new SockJS("http://localhost:8082/community-service/ws");
+    const socket = new SockJS("http://localhost:2001/community-service/ws");
     const client = new Client({
       webSocketFactory: () => socket,
       debug: (msg) => console.log("STOMP Debug:", msg),
@@ -297,7 +296,14 @@ function Comment({ postId, onClose }) {
   const disconnectWebSocket = () => {
     if (stompClient) stompClient.deactivate();
   };
-
+  const countAllComments = (comments) => {
+    return comments.reduce((total, commet) => {
+      const childCount = commet.children
+        ? countAllComments(commet.children)
+        : 0;
+      return total + 1 + childCount;
+    }, 0);
+  };
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div
@@ -309,7 +315,9 @@ function Comment({ postId, onClose }) {
         style={{ animation: "slideLeft 0.3s ease-out" }}
       >
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Bình luận</h2>
+          <h2 className="text-lg font-semibold text-gray-800 tracking-wide flex items-center gap-2">
+            <span>Comment ({countAllComments(comments)})</span>
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl"
@@ -322,7 +330,7 @@ function Comment({ postId, onClose }) {
         <div className="flex-1 overflow-y-auto p-4">
           {comments.length === 0 ? (
             <p className="text-center text-gray-500 text-sm mt-5">
-              Chưa có bình luận nào.
+              No comments yet.
             </p>
           ) : (
             comments.map((item, index) => (

@@ -25,6 +25,12 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    @GetMapping("/getAllCategoryInAddTransaction")
+    public ResponseEntity<List<CategoryResponse>> getAllCategoriesInAddTransaction(@RequestParam String userId) {
+        List<CategoryResponse> categories = categoryService.getAllCategoriesInAddTransaction(userId);
+        return ResponseEntity.ok(categories);
+    }
+
     @GetMapping("/category-detail")
     public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryId(@RequestParam Integer categoryId) {
         return ResponseEntity.ok(new ApiResponse<>(200, "success", categoryService.getCategoryById(categoryId)));

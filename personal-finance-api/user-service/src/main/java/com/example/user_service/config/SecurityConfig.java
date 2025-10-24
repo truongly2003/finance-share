@@ -29,7 +29,7 @@ public class SecurityConfig  {
                                 "api/auth/authenticate",
                                 "api/user/get-username",
                                 "api/user/get-list-username",
-
+                                "api/user/get-list-userId",
                                 "/api/auth/refresh","/api/email/verify-email",
                                 "/api/user/forgot-password","/api/user/reset-password",
                                 "/api/oauth/google","/api/oauth/facebook","/api/auth/callback/facebook"

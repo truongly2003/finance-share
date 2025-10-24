@@ -12,7 +12,7 @@ export default function GoalDetail() {
   const { id } = useParams();
   const [goal, setGoal] = useState(null);
   const [contributes, setContributes] = useState([]);
-  console.log(contributes);
+
   const [showFormContribution, setShowFormContribution] = useState(false);
   const [editingContribute, setEditingContribute] = useState(null);
   //

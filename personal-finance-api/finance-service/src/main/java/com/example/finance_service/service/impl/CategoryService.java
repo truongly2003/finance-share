@@ -23,20 +23,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
-//    private final UserRepository userRepository;
+    //    private final UserRepository userRepository;
     private final CategoryMapper categoryMapper;
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
+
     @Override
     public List<CategoryResponse> getAllCategories(String userId) {
-        List<Category> categories = categoryRepository.getAllCategory(userId,"1");
+        List<Category> categories = categoryRepository.getAllCategory(userId);
+        return categories.stream().map(categoryMapper::toCategoryResponse).toList();
+    }
+
+    @Override
+    public List<CategoryResponse> getAllCategoriesInAddTransaction(String userId) {
+        List<Category> categories = categoryRepository.getAllCategory(userId);
         return categories.stream().map(category -> {
             CategoryResponse categoryResponse = categoryMapper.toCategoryResponse(category);
             // tìm ngân sách có hiệu lực
-            Optional<Budget> budget=budgetRepository.findByUserIdAndCategoryIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-                    userId,categoryResponse.getId(), LocalDate.now(),LocalDate.now()
+            Optional<Budget> budget = budgetRepository.findByUserIdAndCategoryIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+                    userId, categoryResponse.getId(), LocalDate.now(), LocalDate.now()
             );
-            if(budget.isPresent()){
+            if (budget.isPresent()) {
                 Budget budget1 = budget.get();
                 BigDecimal budgetLimit = budget1.getAmountLimit();
                 BigDecimal spent = transactionRepository
@@ -109,4 +116,6 @@ public class CategoryService implements ICategoryService {
         }
         return false;
     }
+
+
 }

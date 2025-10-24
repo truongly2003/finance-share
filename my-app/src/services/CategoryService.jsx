@@ -7,6 +7,14 @@ export const getAllCategory=async(userId)=>{
         console.error(error);
     }
 }
+export const getAllCategoriesInAddTransaction=async(userId)=>{
+    try {
+        const response = await httpRequest.get(`/finance-service/category/getAllCategoryInAddTransaction?userId=${userId}`);
+        return response.data
+    } catch (error) {
+        console.error(error);
+    }
+}
 export const getCategoryById=async(categoryId)=>{
     try {
         const response = await httpRequest.get(`/finance-service/category/category-detail?categoryId=${categoryId}`);

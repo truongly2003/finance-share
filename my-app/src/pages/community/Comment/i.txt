@@ -1,119 +1,131 @@
 public CommentResponse createComment(CommentRequest commentRequest) {
-    // 1. validate postId
-    if (commentRequest.getPostId() == null || !postRepository.existsById(commentRequest.getPostId())) {
-        throw new IllegalArgumentException("Invalid or non-existent postId: " + commentRequest.getPostId());
-    }
+        if (commentRequest.getPostId() == null || !postRepository.existsById(commentRequest.getPostId())) {
+            throw new IllegalArgumentException("Invalid or non-existent postId: " + commentRequest.getPostId());
+        }
+        Comment comment = commentMapper.toComment(commentRequest);
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
+        Comment savedComment = commentRepository.save(comment);
 
-    // 2. Map request -> entity và set thời gian
-    Comment comment = commentMapper.toComment(commentRequest);
-    LocalDateTime now = LocalDateTime.now();
-    comment.setCreatedAt(now);
-    comment.setUpdatedAt(now);
+        CommentResponse commentResponse = commentMapper.toCommentResponse(savedComment);
+        commentResponse.setUserName(getUsername(comment.getUserId()));
 
-    // 3. Lưu comment vào DB (để có id và createdAt chính xác)
-    Comment savedComment = commentRepository.save(comment);
+        Post post = postRepository.findById(commentRequest.getPostId())
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setCommentCount((int) commentRepository.countByPostId(commentRequest.getPostId()));
+        post.setUpdatedAt(LocalDateTime.now());
+        postRepository.save(post);
 
-    // 4. Map entity -> response và set userName
-    CommentResponse commentResponse = commentMapper.toCommentResponse(savedComment);
-    commentResponse.setUserName(getUsername(comment.getUserId()));
+        LocalDateTime commentTime = savedComment.getCreatedAt();
+//      send kafka to notification-service
+//        kiểm tra comment có phải reply không
+        Comment parentComment = null;
+        if (commentRequest.getParentCommentId() != null) {
+            parentComment = commentRepository.findById(commentRequest.getParentCommentId())
+                    .orElseThrow(() -> new RuntimeException("Parent comment not found"));
+        }
+        if (parentComment == null) {
+            //        id của chủ bài viết khác với người comment
+            if (!post.getUserId().equals(commentRequest.getUserId())) {
+                String actorName = getUsername(commentRequest.getUserId());
 
-    // 5. Cập nhật số lượng comment trên post
-    Post post = postRepository.findById(commentRequest.getPostId())
-            .orElseThrow(() -> new RuntimeException("Post not found"));
-    post.setCommentCount((int) commentRepository.countByPostId(commentRequest.getPostId()));
-    post.setUpdatedAt(LocalDateTime.now());
-    postRepository.save(post);
-
-    // 6. Kiểm tra xem đây có phải reply hay là comment gốc
-    Comment parentComment = null;
-    if (commentRequest.getParentCommentId() != null) {
-        parentComment = commentRepository.findById(commentRequest.getParentCommentId())
-                .orElseThrow(() -> new RuntimeException("Parent comment not found"));
-    }
-
-    // Thời điểm tham chiếu: createdAt của comment vừa lưu
-    LocalDateTime commentTime = savedComment.getCreatedAt();
-
-    // 7. Nếu là comment gốc -> gửi notification cho chủ bài viết (post.getUserId())
-    if (parentComment == null) {
-        // không gửi thông báo cho chính chủ bài viết khi họ tự bình luận
-        if (!post.getUserId().equals(commentRequest.getUserId())) {
-            String actorName = getUsername(commentRequest.getUserId());
-
-            // --- LẤY NHỮNG USER ĐÃ COMMENT TRƯỚC NGƯỜI HIỆN TẠI ---
-            // Lấy tất cả comment theo thời gian tăng dần trong bài viết
-            List<Comment> allComments = commentRepository.findByPostIdOrderByCreatedAtAsc(commentRequest.getPostId());
-
-            // Duyệt và thu được danh sách userId đã comment trước commentTime, loại trừ user hiện tại
-            // Dùng LinkedHashSet để giữ thứ tự xuất hiện (ai comment trước đứng trước)
-            Set<String> distinctPreviousUsers = new LinkedHashSet<>();
-            for (Comment c : allComments) {
-                // bỏ chính comment hiện tại (có thể có cùng createdAt) và chỉ lấy comment trước thời điểm this comment
-                if (c.getCreatedAt().isBefore(commentTime) && !c.getUserId().equals(commentRequest.getUserId())) {
-                    distinctPreviousUsers.add(c.getUserId());
+                List<Comment> allComments = commentRepository.findByPostIdOrderByCreatedAtAsc(commentRequest.getPostId());
+                Set<String> distinctPreviousUsers = new LinkedHashSet<>();
+                for (Comment c : allComments) {
+//              Bỏ người đang comment hiện tại   và và Bỏ chủ bài viết (vì họ là người nhận thông báo).
+                  if(!c.getUserId().equals(commentRequest.getUserId()) && !c.getUserId().equals(post.getUserId())) {
+                      distinctPreviousUsers.add(c.getUserId());
+                  }
                 }
+                String message;
+                int previousCount = distinctPreviousUsers.size();
+                if (previousCount == 0) {
+                    message = "commented on your post";
+                } else if (previousCount == 1) {
+                    message = "and other person commented on your post";
+                } else {
+                    message = String.format("and %d other person comment on your post", previousCount);
+                }
+
+                NotificationEventDto notificationEventDto = new NotificationEventDto(
+                        post.getUserId(), commentRequest.getUserId(), actorName, "post", message, "/community/post/detail-post/" + post.getId()
+                );
+                kafkaTemplate.send("notification_events", notificationEventDto);
             }
 
-            // Build message dựa trên số lượng người đã comment trước
-            String message;
-            int previousCount = distinctPreviousUsers.size();
-            if (previousCount == 0) {
-                message = "đã bình luận bài viết của bạn";
-            } else if (previousCount == 1) {
-                message = "và 1 người khác đã bình luận bài viết của bạn";
-            } else {
-                message = String.format("và %d người khác đã bình luận bài viết của bạn", previousCount);
-            }
+        } else {
+            if (!parentComment.getUserId().equals(commentRequest.getUserId())) {
+                String actorName = getUsername(commentRequest.getUserId());
 
-            // Tạo DTO và gửi qua Kafka
-            NotificationEventDto notificationEventDto = new NotificationEventDto(
-                    post.getUserId(),                    // người nhận: chủ bài viết
-                    commentRequest.getUserId(),          // actorId: người vừa comment
-                    actorName,                           // actorName
-                    "post",                              // type
-                    message,
-                    "/community/post/detail-post/" + post.getId()
-            );
-            kafkaTemplate.send("notification_events", notificationEventDto);
+                List<Comment> allComments=commentRepository.findByPostIdOrderByCreatedAtAsc(commentRequest.getPostId());
+                Set<String> distinctPreviousUsers = new LinkedHashSet<>();
+                for(Comment c : allComments) {
+                    if(!c.getUserId().equals(commentRequest.getUserId()) && !c.getUserId().equals(post.getUserId())) {
+                        distinctPreviousUsers.add(c.getUserId());
+                    }
+                }
+                String message;
+                int previousCount = distinctPreviousUsers.size();
+                if (previousCount == 0) {
+                    message="replied on your comment";
+                }else if (previousCount == 1) {
+                    message="and other person replied on your comment";
+                }else {
+                    message = String.format("and %d other person replied on your comment", previousCount);
+                }
+                // send kafka
+                NotificationEventDto notificationEventDto = new NotificationEventDto(
+                        parentComment.getUserId(), commentRequest.getUserId(), actorName, "reply",
+                        "đã trả lời bình luận của bạn", "/community/post/detail-post/" + post.getId()
+                );
+                kafkaTemplate.send("notification_events", notificationEventDto);
+            }
         }
 
-    } else {
-        // 8. Nếu là reply -> gửi notification cho chủ comment bị reply (parentComment.getUserId())
-        if (!parentComment.getUserId().equals(commentRequest.getUserId())) {
-            String actorName = getUsername(commentRequest.getUserId());
 
-            // Lấy tất cả reply cho parentComment, sắp xếp theo createdAt tăng dần
-            List<Comment> replies = commentRepository.findByParentCommentIdOrderByCreatedAtAsc(parentComment.getId());
-
-            Set<String> distinctPreviousRepliers = new LinkedHashSet<>();
-            for (Comment r : replies) {
-                if (r.getCreatedAt().isBefore(commentTime) && !r.getUserId().equals(commentRequest.getUserId())) {
-                    distinctPreviousRepliers.add(r.getUserId());
-                }
-            }
-
-            String message;
-            int previousCount = distinctPreviousRepliers.size();
-            if (previousCount == 0) {
-                message = "đã trả lời bình luận của bạn";
-            } else if (previousCount == 1) {
-                message = "và 1 người khác đã trả lời bình luận của bạn";
-            } else {
-                message = String.format("và %d người khác đã trả lời bình luận của bạn", previousCount);
-            }
-
-            NotificationEventDto notificationEventDto = new NotificationEventDto(
-                    parentComment.getUserId(),           // người nhận: chủ comment bị reply
-                    commentRequest.getUserId(),          // actorId
-                    actorName,
-                    "reply",
-                    message,
-                    "/community/post/detail-post/" + post.getId()
-            );
-            kafkaTemplate.send("notification_events", notificationEventDto);
-        }
+        return commentResponse;
     }
 
-    // 9. Trả về response đã map
-    return commentResponse;
+
+
+
+method 2
+
+private void sendNotification(Post post, CommentRequest request, Comment parentComment, boolean isReply) {
+    String actorName = getUsername(request.getUserId());
+    List<Comment> allComments = commentRepository.findByPostIdOrderByCreatedAtAsc(request.getPostId());
+    Set<String> distinctPreviousUsers = allComments.stream()
+            .filter(c -> !c.getUserId().equals(request.getUserId()) && !c.getUserId().equals(post.getUserId()))
+            .map(Comment::getUserId)
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+
+    int previousCount = distinctPreviousUsers.size();
+    String message = isReply
+            ? (previousCount == 0 ? "replied on your comment"
+                : String.format("and %d other people replied on your comment", previousCount))
+            : (previousCount == 0 ? "commented on your post"
+                : String.format("and %d other people commented on your post", previousCount));
+
+    String receiverId = isReply ? parentComment.getUserId() : post.getUserId();
+
+    NotificationEventDto event = new NotificationEventDto(
+            receiverId,
+            request.getUserId(),
+            actorName,
+            isReply ? "reply" : "post",
+            message,
+            "/community/post/detail-post/" + post.getId()
+    );
+    kafkaTemplate.send("notification_events", event);
 }
+
+
+
+ví dụ
+bài viết A : A đăng
+B bình luận : thông báo cho A rằng B đã bình luận
+C bình luận : thông báo cho A rằng C và 1 người nữa đã bình luận 
+
+A bình luận chính bài của mình 
+
+B sẽ trả lời bình luận của A : thông báo cho A là B đã trả lời bình luận   // logic này đang sai 

@@ -12,12 +12,12 @@ import WalletCard from "@/components/Wallet";
 
 function TransactionLayout({ children }) {
   const navItems = [
-    { to: "/finance/overview", label: "Tổng quan", Icon: BarChart2 },
-    { to: "/finance", label: "Giao dịch", Icon: DollarSign },
-    { to: "/finance/budget", label: "Ngân sách", Icon: PieChart },
-    { to: "/finance/goal", label: "Mục tiêu", Icon: Target },
+    { to: "/finance/overview", label: "Overview", Icon: BarChart2 },
+    { to: "/finance", label: "Transaction", Icon: DollarSign },
+    { to: "/finance/budget", label: "Budget", Icon: PieChart },
+    { to: "/finance/goal", label: "Goal", Icon: Target },
     // { to: "/groups", label: "Groups", Icon: Users },
-    { to: "/finance/setting", label: "Cài đặt", Icon: Settings2 },
+    { to: "/finance/setting", label: "Setting", Icon: Settings2 },
   ];
 
   return (

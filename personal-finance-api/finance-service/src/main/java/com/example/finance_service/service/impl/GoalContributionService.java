@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class GoalContributionService implements IGoalContributionService {
-//    final UserRepository userRepository;
+    //    final UserRepository userRepository;
     final GoalRepository goalRepository;
     final GoalContributionRepository goalContributionRepository;
     final GoalContributeMapper goalContributeMapper;
@@ -40,11 +40,10 @@ public class GoalContributionService implements IGoalContributionService {
 
     @Override
     public boolean addContribute(GoalContributionRequest request) {
-        Goal goal = goalRepository.findById(request.getGoalId()).orElse(null);
+        Goal goal = goalRepository.findById(request.getGoalId())
+                .orElseThrow(() -> new IllegalArgumentException("Goal not found"));
         Wallet wallet = walletRepository.findById(request.getWalletId())
-                .orElseThrow(() -> {
-                    return new IllegalArgumentException("Wallet not found");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("Wallet not found"));
         // kiểm tra số dư
         BigDecimal currentBalance = wallet.getBalance() == null ? BigDecimal.ZERO : wallet.getBalance();
         if (currentBalance.compareTo(request.getAmount()) < 0) {
@@ -186,7 +185,7 @@ public class GoalContributionService implements IGoalContributionService {
 
 
     @Override
-    public boolean hasBalance(Integer goalId, String userId, BigDecimal amount,Integer walletId) {
+    public boolean hasBalance(Integer goalId, String userId, BigDecimal amount, Integer walletId) {
         Optional<Goal> goalOpt = goalRepository.findById(goalId);
 
         if (goalOpt.isEmpty()) return true;

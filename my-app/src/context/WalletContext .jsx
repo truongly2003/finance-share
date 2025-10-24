@@ -9,6 +9,7 @@ export const WalletProvider = ({ children }) => {
   const { userId } = useAuth();
   const [wallets, setWallets] = useState([]);
   const [walletId, setSelectedWalletId] = useState(null);
+  
   const fetchWallets = useCallback(async () => {
     if (!userId) return;
     const res = await getAllWallet(userId);

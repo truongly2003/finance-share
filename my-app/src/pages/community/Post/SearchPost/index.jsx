@@ -26,7 +26,9 @@ function SearchPost() {
     const matchesSearch =
       post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.topic?.some((item) => item.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      post.topic?.some((item) =>
+        item.toLowerCase().includes(searchTerm.toLowerCase())
+      ) ||
       post.userName?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
@@ -36,7 +38,7 @@ function SearchPost() {
       {/* Ô input */}
       <input
         type="text"
-        placeholder="Tìm kiếm bài viết..."
+        placeholder="Search post..."
         className="w-full px-4 py-3 border border-gray-200 rounded-xl  
                    focus:outline-none focus:ring-2 focus:ring-purple-500 
                    bg-white shadow-sm pr-10"

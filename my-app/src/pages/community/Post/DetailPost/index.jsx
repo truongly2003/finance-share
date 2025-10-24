@@ -4,11 +4,13 @@ import PostAction from "../PostAction";
 import { postApi } from "@/services/community/PostService";
 import useAuth from "@/context/useAuth";
 import { getPosts } from "@/features/post/postSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Comment from "../../Comment";
 import { useDispatch } from "react-redux";
 import LoadingSpinner from "@/components/Loading";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MoreHorizontal } from "lucide-react";
+import ShareMenu from "../Shares/ShareMenu";
+
 function DetailPost() {
   const { userId } = useAuth();
   const [post, setPost] = useState({});
@@ -16,6 +18,20 @@ function DetailPost() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+
+  // menu
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const [onComment, setOnComment] = useState({
     showComment: false,
@@ -106,22 +122,40 @@ function DetailPost() {
   const timeFromNow = formatTime(post.createdAt);
 
   return (
-    <div className="min-h-screen  mb-4">
+    <div className="min-h-screen  mb-4 ">
       <div className="">
         {/* Back Button */}
 
         {/* Main Card */}
-        <div className="bg-white overflow-hidden border border-gray-100">
-       
+        <div className="bg-white overflow-hidden border border-gray-200  rounded-lg">
           {/* Header Section */}
           <div className=" px-6 md:px-10 py-8 border-b border-gray-300">
-               <button
-            onClick={() => navigate(-1)}
-            className="mb-2 text-gray-600 hover:text-gray-900 font-semibold flex items-center gap-2 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Quay lại
-          </button>
+            <div className="flex justify-between">
+              <button
+                onClick={() => navigate(-1)}
+                className="mb-2 text-gray-600 hover:text-gray-900 font-semibold flex items-center gap-2 transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Quay lại
+              </button>
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() =>
+                    setActiveMenuId(activeMenuId === post.id ? null : post.id)
+                  }
+                  className="p-2 rounded-full hover:bg-gray-100 transition"
+                >
+                  <MoreHorizontal size={20} />
+                </button>
+
+                {activeMenuId === post.id && (
+                  <ShareMenu
+                    postId={post.id}
+                    onClose={() => setActiveMenuId(null)}
+                  />
+                )}
+              </div>
+            </div>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
                 <h1 className="text-xl md:text-5xl font-bold   mb-3">
@@ -176,16 +210,10 @@ function DetailPost() {
           {/* Content */}
           <div className="px-6 md:px-10 py-4 ">
             <div className="prose prose-lg max-w-none">
-              <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap font-light">
-                {post.content}
-                {post.content}
-                {post.content}
-                {post.content}
-                {post.content}
-                {post.content}
-                {post.content}
-                {post.content}
-              </p>
+              <div
+                className="text-sm text-gray-600 leading-relaxed line-clamp-2 prose prose-purple max-w-none"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              ></div>
             </div>
           </div>
 

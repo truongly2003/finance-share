@@ -5,7 +5,7 @@ import ModalLikes from "../Likes/ModalLikes";
 import { useState } from "react";
 import useAuth from "@/context/useAuth";
 import ModalShares from "../Shares/ModalShares";
-import SharePost from "../Shares/SharePost";
+
 const PostAction = ({
   likes = [],
   likesCount = 0,
@@ -19,7 +19,6 @@ const PostAction = ({
 }) => {
   const [showLikesModal, setShowLikesModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showShareOptionsModal, setShowShareOptionsModal] = useState(false);
   const { userId } = useAuth();
   return (
     <div className="flex items-center justify-between mt-4">
@@ -53,10 +52,7 @@ const PostAction = ({
         {/* Share */}
         <div className="cursor-pointer flex items-center gap-x-2 text-sm">
           <div className="flex space-x-3">
-            <Share2
-              onClick={() => setShowShareOptionsModal(true)}
-              className="h-5 w-5"
-            />
+            <Share2 className="h-5 w-5" />
             <span
               onClick={() => setShowShareModal(true)}
               className="hover:underline hover:text-purple-500"
@@ -78,14 +74,6 @@ const PostAction = ({
       {/*  danh sách chia sẻ */}
       {showShareModal && (
         <ModalShares id={postId} onClose={() => setShowShareModal(false)} />
-      )}
-
-      {showShareOptionsModal && (
-        <SharePost
-          postId={postId}
-          onClose={() => setShowShareOptionsModal(false)}
-          userId={userId}
-        />
       )}
     </div>
   );

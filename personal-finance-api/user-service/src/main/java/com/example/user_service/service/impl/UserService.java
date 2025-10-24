@@ -176,4 +176,9 @@ public class UserService implements IUserService {
         return userNames;
     }
 
+    @Override
+    public List<String> getListUserId() {
+        return userRepository.findDistinctUserIds();
+    }
+
 }

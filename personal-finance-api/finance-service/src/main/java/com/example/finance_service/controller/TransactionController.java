@@ -1,5 +1,6 @@
 package com.example.finance_service.controller;
 
+import com.example.finance_service.client.UserClient;
 import com.example.finance_service.dto.request.TransactionRequest;
 import com.example.finance_service.dto.response.ApiResponse;
 import com.example.finance_service.dto.response.TransactionResponse;
@@ -16,12 +17,16 @@ import java.util.List;
 @RequestMapping("/transaction")
 public class TransactionController {
     private final ITransactionService transactionService;
+    private final UserClient   userClient;
 
-    public TransactionController(ITransactionService transactionService  ) {
+    public TransactionController(ITransactionService transactionService, UserClient userClient) {
         this.transactionService = transactionService;
-
+        this.userClient = userClient;
     }
-
+    @GetMapping("/test")
+    public ResponseEntity<List<String>> getListUserId(){
+        return ResponseEntity.ok(userClient.getUserListId());
+    }
     // Retrieve list of transactions by user ID and wallet ID
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUserIdAnd(

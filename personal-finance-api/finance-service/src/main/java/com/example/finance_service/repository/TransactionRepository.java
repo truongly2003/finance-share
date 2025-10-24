@@ -71,13 +71,25 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     BigDecimal getTotalExpense(@Param("userId") String userId);
 
     // tính tổng số tiền thuộc 1 loại trong ngân sách
-    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.userId = :userId AND t.category.id = :categoryId AND t.transactionDate BETWEEN :start AND :end")
+    @Query("SELECT SUM(t.amount) FROM Transaction t " +
+            "WHERE t.userId = :userId AND t.category.id = :categoryId AND t.transactionDate " +
+            "BETWEEN :start AND :end")
     BigDecimal sumAmountByUserIdAndCategoryIdAndTransactionDateBetween(
             @Param("userId") String userId,
             @Param("categoryId") Integer categoryId,
             @Param("start") LocalDate start,
             @Param("end") LocalDate end);
 
+    // tính tổng số tiền chi tiêu trong ngân sách category type= expense
+    @Query("SELECT SUM(t.amount) FROM Transaction t " +
+            "WHERE t.userId = :userId " +
+            "AND t.category.categoryType = 'expense' " +
+            "AND t.transactionDate BETWEEN :startDate AND :endDate")
+    BigDecimal sumTotalExpenseByUserIdAndDateRange(
+            @Param("userId") String userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 
     @Query("SELECT DISTINCT t.userId FROM Transaction t")
     List<String> findDistinctUserIds();

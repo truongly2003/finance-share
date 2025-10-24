@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ChevronDown } from "lucide-react";
-import { getAllCategory } from "@/services/CategoryService";
+import { getAllCategoriesInAddTransaction } from "@/services/CategoryService";
 import useAuth from "@/context/useAuth";
 export default function CategoryDropdown({
   onSelectCategory,
@@ -12,17 +12,18 @@ export default function CategoryDropdown({
   const [selectedType, setSelectedType] = useState("expense");
   const [categories, setCategories] = useState({ expense: [], income: [] });
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  console.log(categories)
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const result = await getAllCategory(userId);
+        const result = await getAllCategoriesInAddTransaction(userId);
         if (result) {
           const expenseCategories = result.filter(
-            (cat) => cat.categoryType === "Expense"
+            (cat) => cat.categoryType === "expense"
           );
+          console.log(expenseCategories)
           const incomeCategories = result.filter(
-            (cat) => cat.categoryType === "Income"
+            (cat) => cat.categoryType === "income"
           );
           setCategories({
             expense: expenseCategories,

@@ -4,13 +4,17 @@ import useAuth from "@/context/useAuth";
 import { useState } from "react";
 import MoneyInput from "../ui/MoneyInput";
 import PropTypes from "prop-types";
-import { addWallet, deleteWallet, updateWallet } from "@/services/WalletService";
+import {
+  addWallet,
+  deleteWallet,
+  updateWallet,
+} from "@/services/WalletService";
 import useNotification from "@/context/useNotification";
 import useBalance from "@/context/useBalance";
 function WalletForm({ initialWallet, onClose, onSuccess }) {
-    const {refreshBalance}=useBalance()
-  const {userId} = useAuth();
-  const {notify}=useNotification()
+  const { refreshBalance } = useBalance();
+  const { userId } = useAuth();
+  const { notify } = useNotification();
   const [wallet, setWallet] = useState(
     initialWallet || {
       userId: userId,
@@ -20,7 +24,7 @@ function WalletForm({ initialWallet, onClose, onSuccess }) {
       balance: "",
     }
   );
-
+  
   const handleChangeWallet = (e) => {
     setWallet({
       ...wallet,
@@ -44,7 +48,7 @@ function WalletForm({ initialWallet, onClose, onSuccess }) {
       notify(response.message, response.code === 200 ? "success" : "error");
       onClose();
       onSuccess();
-      refreshBalance()
+      refreshBalance();
     } catch (error) {
       console.error(error);
     }
@@ -56,7 +60,7 @@ function WalletForm({ initialWallet, onClose, onSuccess }) {
       notify(response.message, response.code === 200 ? "success" : "error");
       onClose();
       onSuccess();
-      refreshBalance()
+      refreshBalance();
     } catch (error) {
       console.log(error);
     }

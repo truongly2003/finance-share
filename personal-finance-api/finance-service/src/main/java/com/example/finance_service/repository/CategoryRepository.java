@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> getCategoryByUserId(String userId);
 
-    @Query("SELECT c FROM Category c WHERE c.userId = :idDefault OR c.userId = :userId")
-    List<Category> getAllCategory(@Param("userId") String userId, @Param("idDefault") String idDefault);
+    @Query("SELECT c FROM Category c WHERE c.defaultCategory = true OR c.userId = :userId")
+    List<Category> getAllCategory(@Param("userId") String userId);
 
     Category getCategoryById(Integer id);
 

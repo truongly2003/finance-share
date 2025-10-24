@@ -15,4 +15,6 @@ public interface ICategoryService {
     boolean updateCategory(Integer categoryId,String userId, CategoryRequest categoryRequest);
 
     boolean deleteCategory(Integer categoryId,String userId);
+
+    List<CategoryResponse> getAllCategoriesInAddTransaction(String userId);
 }

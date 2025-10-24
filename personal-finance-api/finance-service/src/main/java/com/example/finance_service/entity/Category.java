@@ -18,6 +18,7 @@ public class Category {
 
     private String categoryName;
 
+    // income and expense
     private String categoryType;
 
     private String description;

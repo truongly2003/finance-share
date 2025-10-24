@@ -41,7 +41,7 @@ function Login() {
         localStorage.setItem("userId", response.userId);
         localStorage.setItem("userName", response.userName);
 
-        navigate("/community/post");
+        navigate("/");
       } else {
         notify("Incorrect email or password 🎉", "error");
         navigate("/login");

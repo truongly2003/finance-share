@@ -129,4 +129,10 @@ public class UserController {
         List<String> listUsername = userService.getListUserName();
         return ResponseEntity.ok(listUsername);
     }
+
+    @GetMapping("/get-list-userId")
+    public ResponseEntity<List<String>> getListUserId() {
+        List<String> listUserId = userService.getListUserId();
+        return ResponseEntity.ok(listUserId);
+    }
 }
