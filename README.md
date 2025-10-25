@@ -47,33 +47,6 @@ The system follows a **Microservice Architecture** for scalability and modularit
 - `Finance Service`
 - `Community Service`
 - `Notification Service`
-
-**Communication:**  
-- Services communicate asynchronously using **Apache Kafka**.
-
-**Diagram (Conceptual):**
-      ┌──────────────────────┐
-      │      Frontend        │
-      │   (React + Tailwind) │
-      └──────────┬───────────┘
-                 │
-       ┌─────────┴───────────┐
-       │     API Gateway     │
-       └─────────┬───────────┘
- ┌────────────────────────────────────────┐
- │             Microservices              │
- │ ┌────────┐ ┌───────────┐ ┌──────────┐ │
- │ │  User  │ │  Finance  │ │Community │ │
- │ └────┬───┘ └─────┬─────┘ └────┬────┘ │
- │      │           │           │        │
- │      └──────┬────┴────┬─────┘        │
- │             │ Kafka    │              │
- │             └────┬─────┘              │
- │             Notification               │
- └────────────────────────────────────────┘
-
----
-
 ## Technology Stack
 
 | Layer | Technology |
