@@ -99,7 +99,7 @@ const BlogCard = ({ filterPost }) => {
                     {/* Image */}
                     <div className="flex-shrink-0 w-36 h-24 rounded-lg overflow-hidden">
                       <img
-                        src="https://files.fullstack.edu.vn/f8-prod/blog_posts/12996/68ac2c74a2f87.png"
+                        src={post.imageUrl}
                         alt={post.title}
                         className="w-full h-full object-cover"
                       />

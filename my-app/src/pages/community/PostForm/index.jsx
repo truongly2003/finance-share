@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useNotification from "@/context/useNotification";
 import { postApi } from "@/services/community/PostService";
 import useAuth from "@/context/useAuth";
@@ -7,24 +7,61 @@ import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import "quill/dist/quill.snow.css";
 import ReactQuill from "react-quill-new";
-
+import { uploadFileApi } from "@/services/community/UploadService";
 export default function PostForm({ initialPost, onClose, onSuccess }) {
   const navigate = useNavigate();
   const { notify } = useNotification();
   const { userId } = useAuth();
+  const quillRef = useRef(null);
   const [post, setPost] = useState(
     initialPost || {
       userId: userId,
       topic: [],
       title: "",
       content: "",
-      mediaUrls: [],
+      imageUrl: "",
     }
   );
   const [customTopic, setCustomTopic] = useState("");
 
   const handleChange = (e) => {
     setPost({ ...post, [e.target.name]: e.target.value });
+  };
+
+  const handleThumbnailChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadFileApi.uploadFile(file);
+      setPost((prev) => ({ ...prev, imageUrl: url }));
+      notify("Upload ảnh đại diện thành công!", "success");
+    } catch {
+      notify("Upload ảnh đại diện thất bại!", "error");
+    }
+  };
+  const handleImageUpload = async () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        try {
+          // Gọi API upload ảnh
+          const url = await uploadFileApi.uploadFile(file);
+
+          // Chèn ảnh vào editor
+          const quill = quillRef.current.getEditor();
+          const range = quill.getSelection();
+          quill.insertEmbed(range.index, "image", url);
+        } catch (error) {
+          notify("Upload ảnh thất bại!", error);
+        }
+      }
+    };
   };
 
   const handleSubmit = async () => {
@@ -87,16 +124,18 @@ export default function PostForm({ initialPost, onClose, onSuccess }) {
     "Khác",
   ];
 
-  // ✅ Thêm modules cho Quill (hiện toolbar và cho phép chèn ảnh)
   const quillModules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic", "underline", "strike"],
       [{ list: "ordered" }, { list: "bullet" }],
       ["blockquote", "code-block"],
-      ["link", "image"], // cho phép chèn hình ảnh
+      ["link", "image"],
       ["clean"],
     ],
+    handlers: {
+      image: handleImageUpload,
+    },
   };
 
   return (
@@ -161,27 +200,36 @@ export default function PostForm({ initialPost, onClose, onSuccess }) {
             )}
           </div>
 
-          {/* URL hình ảnh */}
+          {/* ảnh đại diện */}
           <div>
-            <label className="block font-medium mb-1">URL hình ảnh đại diện</label>
+            <label className="block font-medium mb-1">Ảnh đại diện</label>
             <input
-              type="text"
-              name="mediaUrls"
-              placeholder="https://example.com/image.jpg"
-              className="w-full border rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              type="file"
+              accept="image/*"
+              onChange={handleThumbnailChange}
             />
+            {post.imageUrl.length > 0 && (
+              <img
+                src={post.imageUrl}
+                alt="preview"
+                className="mt-2 max-h-40 rounded"
+              />
+            )}
           </div>
 
           {/* Nội dung */}
           <div>
-            <label className="block font-medium mb-1">Nội dung bài viết *</label>
+            <label className="block font-medium mb-1">
+              Nội dung bài viết *
+            </label>
             <div className="border rounded-lg overflow-hidden">
               <ReactQuill
+                ref={quillRef}
                 theme="snow"
                 modules={quillModules}
                 value={post.content}
                 onChange={(value) => setPost({ ...post, content: value })}
-                className="h-[200px] md:h-[200px] lg:h-[300px]" // ✅ to hơn khi nhập nội dung dài
+                className="h-[200px] md:h-[200px] lg:h-[300px]"
               />
             </div>
           </div>

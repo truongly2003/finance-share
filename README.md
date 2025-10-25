@@ -1,79 +1,94 @@
-"# finance-share" 
-Hệ thống **Quản lý tài chính cá nhân & Cộng đồng chia sẻ bài viết về tài chính** được phát triển theo **kiến trúc Microservice**, giúp người dùng quản lý ví, chi tiêu, ngân sách và mục tiêu tài chính cá nhân, đồng thời tham gia chia sẻ kiến thức, bài viết trong cộng đồng tài chính.
+# 💰 Personal Finance & Community Platform
+A **microservice-based platform** for managing personal finances and sharing posts — featuring **real-time notifications** powered by **WebSocket** and **Kafka**.
+---
 
-## Kiến trúc tổng quan
+## 🧩 Key Features
 
-### 🔹 Frontend
+### 👤 User Service
+- Secure authentication & authorization using **JWT**.  
+- Social login with **Facebook** and **Google**.  
+- **Email verification** for account activation.  
+- Support for **password reset**, **change password**, and **profile update**.
+![alt text](image.png)
+![alt text](image-1.png)
+---
 
-* **ReactJS** kết hợp **TailwindCSS** → giao diện hiện đại, tối ưu trải nghiệm người dùng.
+### 💵 Finance Service
+- Track and analyze **transactions** and **spending statistics**.  
+- Manage **expenses**, **income**, **budgets**, **goals**, **wallets**, and **categories**.  
+- Get **over-budget warnings** when expenses exceed **90% of the set budget**.  
+- Create and manage **spending budgets** easily.
+![alt text](image-2.png)
+---
 
-### 🔹 Backend
+### 🏛 Community Service
+- Create, edit, and manage **posts**.  
+- **Nested commenting system** (comment and reply).  
+- Like posts and comments.  
+- View posts from other users in a social feed.
+![alt text](image-3.png)
+---
 
-* **Microservice Architecture** với các công nghệ:
+### 🔔 Notification Service
+- **Real-time notifications** using **WebSocket** and **Kafka**.  
+- Notifications triggered when:
+  - Budget usage reaches 90%.  
+  - Daily transaction reminder.  
+  - Someone **likes**, **comments**, or **replies** on your post/comment.  
+![alt text](image-4.png)
+---
 
-  * **Spring Boot** — phát triển dịch vụ nhanh chóng, dễ mở rộng.
-  * **Spring Security** — bảo mật và xác thực người dùng.
-  * **Spring Kafka** — xử lý thông báo real-time.
-  * **Spring Data JPA** — tương tác cơ sở dữ liệu hiệu quả.
+## ⚙️ Architecture
 
-### 🔹 Database
+The system follows a **Microservice Architecture** for scalability and modularity.
 
-| Service              | Database | Mô tả                                     |
-| -------------------- | -------- | ----------------------------------------- |
-| user-service         | MySQL    | Quản lý thông tin người dùng, xác thực    |
-| notification-service | MongoDB  | Lưu trữ thông báo real-time               |
-| finance-service      | MySQL    | Quản lý ví, chi tiêu, ngân sách, mục tiêu |
-| community-service    | MongoDB  | Lưu trữ bài viết, bình luận, tương tác    |
-| api-gateway          | -        | Cổng giao tiếp giữa các dịch vụ           |
+**Services:**
+- `User Service`
+- `Finance Service`
+- `Community Service`
+- `Notification Service`
+
+**Communication:**  
+- Services communicate asynchronously using **Apache Kafka**.
+
+**Diagram (Conceptual):**
+      ┌──────────────────────┐
+      │      Frontend        │
+      │   (React + Tailwind) │
+      └──────────┬───────────┘
+                 │
+       ┌─────────┴───────────┐
+       │     API Gateway     │
+       └─────────┬───────────┘
+ ┌────────────────────────────────────────┐
+ │             Microservices              │
+ │ ┌────────┐ ┌───────────┐ ┌──────────┐ │
+ │ │  User  │ │  Finance  │ │Community │ │
+ │ └────┬───┘ └─────┬─────┘ └────┬────┘ │
+ │      │           │           │        │
+ │      └──────┬────┴────┬─────┘        │
+ │             │ Kafka    │              │
+ │             └────┬─────┘              │
+ │             Notification               │
+ └────────────────────────────────────────┘
 
 ---
 
-## Tính năng 
+## Technology Stack
 
-### 🔸 Đăng nhập & Xác thực
-
-* Đăng nhập bằng **Facebook**, **Google**, hoặc **Email**.
-* Xác thực tài khoản qua **email** để bảo mật tối đa.
-
-🖼️ *Ảnh minh họa phần đăng nhập — Ảnh 1*
-
----
-
-### 🔸 Cộng đồng tài chính
-
-* **Đăng bài viết**, **bình luận**, **thả tym**, và **quản lý bài viết cá nhân**.
-* Không gian chia sẻ kiến thức và kinh nghiệm tài chính.
-
-🖼️ *Ảnh minh họa phần cộng đồng — Ảnh 2*
+| Layer | Technology |
+|-------|-------------|
+| **Architecture** | Microservice |
+| **Backend** | Java, Spring Boot, Spring Data JPA, Spring Security, Spring Kafka, WebSocket |
+| **Frontend** | ReactJS, TailwindCSS |
+| **Databases** | MySQL (Relational), MongoDB (Document-based) |
+| **Authentication** | JWT |
+| **Real-time Messaging** | WebSocket + Apache Kafka |
 
 ---
 
-### 🔸 Quản lý tài chính cá nhân
+## 🧾 Database Design
 
-* **Quản lý ví**, **chi tiêu**, **ngân sách**, **mục tiêu**.
-* **Thống kê chi tiêu** trực quan giúp theo dõi dòng tiền hiệu quả.
-
-🖼️ *Ảnh minh họa phần quản lý tài chính — Ảnh 3*
-
----
-
-### 🔸 Thông báo real-time
-
-* Cập nhật ngay lập tức các sự kiện: bình luận, tương tác, hoặc cập nhật ngân sách.
-* Triển khai qua **Spring Kafka** + **WebSocket**.
-
-🖼️ *Ảnh minh họa phần thông báo — Ảnh 4*
-
----
-
-## ⚙️ Công nghệ sử dụng
-
-| Thành phần     | Công nghệ                                                   |
-| -------------- | ----------------------------------------------------------- |
-| Frontend       | ReactJS, TailwindCSS                                        |
-| Backend        | Spring Boot, Spring Security, Spring Kafka, Spring Data JPA |
-| Database       | MySQL, MongoDB                                              |
-| Authentication | Google, Facebook, Email verification                        |
-| Communication  | REST API, Kafka                            |
-| Deployment     | Docker, Microservice Architecture                           |
+- **MySQL** – stores relational data (users, finance data)  
+- **MongoDB** – stores non-relational community data (posts, comments)
 

@@ -211,7 +211,7 @@ function DetailPost() {
           <div className="px-6 md:px-10 py-4 ">
             <div className="prose prose-lg max-w-none">
               <div
-                className="text-sm text-gray-600 leading-relaxed line-clamp-2 prose prose-purple max-w-none"
+                className="text-sm text-gray-600 leading-relaxed  prose prose-purple max-w-none"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               ></div>
             </div>

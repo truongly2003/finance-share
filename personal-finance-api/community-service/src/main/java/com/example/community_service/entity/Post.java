@@ -18,7 +18,7 @@ public class Post {
     private String userId;
     private String title;
     private String content;
-    private List<String> mediaUrls = new ArrayList<>();
+    private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

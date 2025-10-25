@@ -17,6 +17,7 @@ public class CommentRequest {
     private String userId;
     private String content;
     private String parentCommentId;
+    private String imageUrl;
     private List<String> likes = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

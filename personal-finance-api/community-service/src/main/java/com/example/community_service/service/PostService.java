@@ -85,7 +85,7 @@ public class PostService {
         Post existingPost = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         existingPost.setTitle(postRequest.getTitle());
         existingPost.setContent(postRequest.getContent());
-        existingPost.setMediaUrls(postRequest.getMediaUrls());
+        existingPost.setImageUrl(postRequest.getImageUrl());
         existingPost.setUpdatedAt(LocalDateTime.now());
         Post updatedPost = postRepository.save(existingPost);
         return postMapper.toPostResponse(updatedPost);

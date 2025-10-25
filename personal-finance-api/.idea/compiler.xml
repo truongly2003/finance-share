@@ -19,7 +19,7 @@
         </processorPath>
         <module name="analytics-service" />
       </profile>
-      <profile name="Annotation profile for finance-service" enabled="true">
+      <profile name="Annotation profile for community-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -30,8 +30,8 @@
         </processorPath>
         <module name="user-service" />
         <module name="common" />
-        <module name="finance-service" />
         <module name="community-service" />
+        <module name="finance-service" />
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
