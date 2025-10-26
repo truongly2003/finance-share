@@ -29,7 +29,6 @@ A **microservice-based platform** for managing personal finances and sharing pos
 ![alt text](image-3.png)
 ![alt text](image-5.png)
 ![alt text](image-6.png)
----
 
 ### 🔔 Notification Service
 - **Real-time notifications** using **WebSocket** and **Kafka**.  
@@ -49,33 +48,6 @@ The system follows a **Microservice Architecture** for scalability and modularit
 - `Finance Service`
 - `Community Service`
 - `Notification Service`
-
-**Communication:**  
-- Services communicate asynchronously using **Apache Kafka**.
-
-**Diagram (Conceptual):**
-      ┌──────────────────────┐
-      │      Frontend        │
-      │   (React + Tailwind) │
-      └──────────┬───────────┘
-                 │
-       ┌─────────┴───────────┐
-       │     API Gateway     │
-       └─────────┬───────────┘
- ┌────────────────────────────────────────┐
- │             Microservices              │
- │ ┌────────┐ ┌───────────┐ ┌──────────┐ │
- │ │  User  │ │  Finance  │ │Community │ │
- │ └────┬───┘ └─────┬─────┘ └────┬────┘ │
- │      │           │           │        │
- │      └──────┬────┴────┬─────┘        │
- │             │ Kafka    │              │
- │             └────┬─────┘              │
- │             Notification               │
- └────────────────────────────────────────┘
-
----
-
 ## Technology Stack
 
 | Layer | Technology |
