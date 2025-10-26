@@ -27,6 +27,8 @@ A **microservice-based platform** for managing personal finances and sharing pos
 - Like posts and comments.  
 - View posts from other users in a social feed.
 ![alt text](image-3.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
 ---
 
 ### 🔔 Notification Service
